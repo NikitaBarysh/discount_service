@@ -4,10 +4,11 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"time"
+
 	"github.com/NikitaBarysh/discount_service.git/internal/entity"
 	"github.com/NikitaBarysh/discount_service.git/internal/repository"
 	"github.com/golang-jwt/jwt/v4"
-	"time"
 )
 
 const (
@@ -18,7 +19,7 @@ const (
 
 type claims struct {
 	jwt.RegisteredClaims
-	UserId int `json:"user_id"`
+	UserId int `json:"id"`
 }
 
 type AuthService struct {
@@ -34,8 +35,17 @@ func (s *AuthService) CreateUser(user entity.User) error {
 	return s.rep.CreateUser(user)
 }
 
+func (s *AuthService) GetUser(userData entity.User) (entity.User, error) {
+	user, err := s.rep.GetUser(userData.Login, generatePasswordHash(userData.Password))
+	if err != nil {
+		return entity.User{}, fmt.Errorf("GetUser: %w", err)
+	}
+	return user, nil
+}
+
 func (s *AuthService) GenerateToken(userData entity.User) (string, error) {
 	user, err := s.rep.GetUser(userData.Login, generatePasswordHash(userData.Password))
+
 	if err != nil {
 		return "", fmt.Errorf("GetUser: %w", err)
 	}
@@ -76,7 +86,6 @@ func (s *AuthService) ValidateLogin(user entity.User) error {
 	if err != nil {
 		return fmt.Errorf("get user: %w", err)
 	}
-	//fmt.Println("validate", userFromDB, userFromDB.Id, userFromDB.Login)
 
 	if userFromDB.Login == "" {
 		return nil

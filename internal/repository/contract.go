@@ -1,1 +1,37 @@
 package repository
+
+import (
+	"github.com/NikitaBarysh/discount_service.git/internal/entity"
+	"github.com/jmoiron/sqlx"
+)
+
+type Authorization interface {
+	CreateUser(user entity.User) error
+	GetUser(login, password string) (entity.User, error)
+}
+
+type Order interface {
+	CreateOrder(order entity.Order) error
+	CheckNumber(number string) bool
+	GetOrders(userID int) ([]entity.Order, error)
+}
+
+type Withdraw interface {
+	GetBalance(userID int) (entity.Balance, error)
+	SetWithdraw(withdraw entity.Withdraw, userID int) error
+	GetWithdraw(userId int) ([]entity.Withdraw, error)
+}
+
+type Repository struct {
+	Authorization
+	Order
+	Withdraw
+}
+
+func NewRepository(db *sqlx.DB) *Repository {
+	return &Repository{
+		Authorization: NewAuthPostgres(db),
+		Order:         NewOrderRepository(db),
+		Withdraw:      NewWithdrawRepository(db),
+	}
+}

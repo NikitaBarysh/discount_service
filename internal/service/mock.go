@@ -77,6 +77,21 @@ func (mr *MockAuthorizationMockRecorder) GenerateToken(user interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateToken", reflect.TypeOf((*MockAuthorization)(nil).GenerateToken), user)
 }
 
+// GetUser mocks base method.
+func (m *MockAuthorization) GetUser(userData entity.User) (entity.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUser", userData)
+	ret0, _ := ret[0].(entity.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUser indicates an expected call of GetUser.
+func (mr *MockAuthorizationMockRecorder) GetUser(userData interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUser", reflect.TypeOf((*MockAuthorization)(nil).GetUser), userData)
+}
+
 // ParseToken mocks base method.
 func (m *MockAuthorization) ParseToken(token string) (int, error) {
 	m.ctrl.T.Helper()
@@ -104,4 +119,55 @@ func (m *MockAuthorization) ValidateLogin(user entity.User) error {
 func (mr *MockAuthorizationMockRecorder) ValidateLogin(user interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ValidateLogin", reflect.TypeOf((*MockAuthorization)(nil).ValidateLogin), user)
+}
+
+// MockOrder is a mock of Order interface.
+type MockOrder struct {
+	ctrl     *gomock.Controller
+	recorder *MockOrderMockRecorder
+}
+
+// MockOrderMockRecorder is the mock recorder for MockOrder.
+type MockOrderMockRecorder struct {
+	mock *MockOrder
+}
+
+// NewMockOrder creates a new mock instance.
+func NewMockOrder(ctrl *gomock.Controller) *MockOrder {
+	mock := &MockOrder{ctrl: ctrl}
+	mock.recorder = &MockOrderMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockOrder) EXPECT() *MockOrderMockRecorder {
+	return m.recorder
+}
+
+// CreateOrder mocks base method.
+func (m *MockOrder) CreateOrder(user entity.Order) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateOrder", user)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateOrder indicates an expected call of CreateOrder.
+func (mr *MockOrderMockRecorder) CreateOrder(user interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrder", reflect.TypeOf((*MockOrder)(nil).CreateOrder), user)
+}
+
+// LuhnAlgorithm mocks base method.
+func (m *MockOrder) LuhnAlgorithm(num int) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "LuhnAlgorithm", num)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// LuhnAlgorithm indicates an expected call of LuhnAlgorithm.
+func (mr *MockOrderMockRecorder) LuhnAlgorithm(num interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LuhnAlgorithm", reflect.TypeOf((*MockOrder)(nil).LuhnAlgorithm), num)
 }

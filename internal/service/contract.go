@@ -13,14 +13,32 @@ type Authorization interface {
 	ParseToken(token string) (int, error)
 	ValidateLogin(user entity.User) error
 	CheckData(user entity.User) error
+	GetUser(userData entity.User) (entity.User, error)
+}
+
+type Order interface {
+	LuhnAlgorithm(num int) bool
+	CreateOrder(user entity.Order) error
+	CheckNumber(number string) error
+	GetOrders(userID int) ([]entity.Order, error)
+}
+
+type Withdraw interface {
+	GetBalance(userID int) (entity.Balance, error)
+	SetWithdraw(withdraw entity.Withdraw, userID int) error
+	GetWithdraw(userId int) ([]entity.Withdraw, error)
 }
 
 type Service struct {
 	Authorization
+	Order
+	Withdraw
 }
 
 func NewService(rep *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(rep),
+		Order:         NewOrderService(rep),
+		Withdraw:      NewWithdrawService(rep),
 	}
 }
