@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -35,7 +34,7 @@ func (h *Handler) useWithdraw(c *gin.Context) {
 	var withdraw entity.Withdraw
 
 	err := c.BindJSON(&withdraw)
-	fmt.Println(err)
+
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "err to read body")
 		return
