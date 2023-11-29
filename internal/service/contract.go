@@ -29,6 +29,9 @@ type Withdraw interface {
 	GetWithdraw(userId int) ([]entity.Withdraw, error)
 }
 
+type Worker interface {
+}
+
 type Service struct {
 	Authorization
 	Order

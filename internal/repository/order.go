@@ -2,7 +2,6 @@ package repository
 
 import (
 	"fmt"
-
 	"github.com/NikitaBarysh/discount_service.git/internal/entity"
 	"github.com/jmoiron/sqlx"
 )
@@ -45,4 +44,38 @@ func (r *OrderRepository) CheckNumber(number string) bool {
 	}
 
 	return false
+}
+
+func (r *OrderRepository) GetNewOrder() ([]entity.UpdateStatus, error) {
+	number := make([]entity.UpdateStatus, 0)
+	err := r.db.Select(&number, getNewOrder)
+	fmt.Println("1: ", err)
+	if err != nil {
+		return nil, fmt.Errorf("err to get number: %w", err)
+	}
+	fmt.Println("num: ", number)
+	return number, nil
+}
+
+func (r *OrderRepository) UpdateStatus(response entity.UpdateStatus) error {
+	tx, err := r.db.Begin()
+	fmt.Println("3")
+
+	if err != nil {
+		return fmt.Errorf("err to begin TX: %w", err)
+	}
+
+	_, err = tx.Exec(updateUserBalance, response.Accrual, response.UserID)
+	if err != nil {
+		tx.Rollback()
+		return fmt.Errorf("err to update user balance: %w", err)
+	}
+
+	_, err = tx.Exec(updateOrderStatus, response.Status, response.Order)
+	if err != nil {
+		tx.Rollback()
+		return fmt.Errorf("err to update order stattus")
+	}
+
+	return tx.Commit()
 }

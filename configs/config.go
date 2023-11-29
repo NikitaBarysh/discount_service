@@ -33,9 +33,9 @@ func WithAccrual(accrual string) Option {
 
 func NewConfig(option ...Option) *Config {
 	cfg := &Config{
-		Endpoint: "8080",
+		Endpoint: "8000",
 		DataBase: "postgres://postgres:qwerty@localhost:5434/postgres?sslmode=disable",
-		Accrual:  "",
+		Accrual:  "http://localhost:8080/",
 	}
 
 	for _, opt := range option {
@@ -47,9 +47,9 @@ func NewConfig(option ...Option) *Config {
 
 func NewServer() *Config {
 	var cfg Config
-	flag.StringVar(&cfg.Endpoint, "a", "8080", "endpoint to run server")
+	flag.StringVar(&cfg.Endpoint, "a", "8000", "endpoint to run server")
 	flag.StringVar(&cfg.DataBase, "d", "", "db address")
-	flag.StringVar(&cfg.Accrual, "r", "", "accrual")
+	flag.StringVar(&cfg.Accrual, "r", "http://localhost:8080/", "accrual")
 
 	flag.Parse()
 
