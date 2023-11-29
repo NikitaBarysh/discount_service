@@ -19,7 +19,7 @@ func (s *OrderService) CreateOrder(order entity.Order) error {
 	err := s.rep.CreateOrder(order)
 
 	if err != nil {
-		return fmt.Errorf("create order in DB: %s", err)
+		return fmt.Errorf("create order  DB: %s", err)
 	}
 	return nil
 }
