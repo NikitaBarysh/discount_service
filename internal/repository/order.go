@@ -36,15 +36,11 @@ func (r *OrderRepository) GetOrders(userID int) ([]entity.Order, error) {
 	return orderSlice, nil
 }
 
-func (r *OrderRepository) CheckNumber(number string) bool {
+func (r *OrderRepository) CheckNumber(number string) int {
 	var order entity.Order
 	r.db.Get(&order.UserID, getOrder, number)
 
-	if order.UserID != 0 {
-		return false
-	}
-
-	return true
+	return order.UserID
 }
 
 func (r *OrderRepository) GetNewOrder() ([]entity.UpdateStatus, error) {
