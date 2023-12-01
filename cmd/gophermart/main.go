@@ -35,6 +35,6 @@ func main() {
 
 	srv := new(app.Server)
 	if err := srv.Run(cfg.Endpoint, handlers.InitRouters()); err != nil {
-		logrus.Fatalf("err while runnig server: %s", err.Error())
+		logrus.Info("err while runnig server: %s", err.Error())
 	}
 }
