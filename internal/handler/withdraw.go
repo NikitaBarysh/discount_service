@@ -73,13 +73,13 @@ func (h *Handler) useWithdraw(c *gin.Context) {
 }
 
 func (h *Handler) getWithdraw(c *gin.Context) {
-	userId, errGet := c.Get(userCtx)
+	userID, errGet := c.Get(userCtx)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get user id")
 		return
 	}
 
-	withdraw, err := h.services.Withdraw.GetWithdraw(userId.(int))
+	withdraw, err := h.services.Withdraw.GetWithdraw(userID.(int))
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusNoContent, "history is empty")
 		return
