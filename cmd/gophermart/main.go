@@ -26,9 +26,7 @@ func main() {
 	storage := repository.NewRepository(db)
 	newService := service.NewService(storage)
 	handlers := handler.NewHandler(newService)
-	url := cfg.AccrualSystemAddr
-	fmt.Println("main", url)
-	service.NewOrderRequest(url)
+	service.NewOrderRequest(cfg.AccrualSystemAddr)
 	work := service.NewWorkerPool(ctx, 6, storage.Order)
 
 	go func() {
