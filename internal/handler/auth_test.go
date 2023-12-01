@@ -71,7 +71,7 @@ func TestHandler_signUp(t *testing.T) {
 				Password: "qwerty",
 			},
 			mockBehaviour: func(s *service.MockAuthorization, user entity.User, token string) {
-				s.EXPECT().ValidateLogin(user).Return(entity.NotUniqueLogin)
+				s.EXPECT().ValidateLogin(user).Return(entity.ErrNotUniqueLogin)
 			},
 			expectedStatusCode:  409,
 			expectedRequestBody: `{"message":"create new login, this is busy"}`,
@@ -163,7 +163,7 @@ func TestHandler_signIn(t *testing.T) {
 				Password: "qwerty",
 			},
 			mockBehaviour: func(s *service.MockAuthorization, user entity.User, token string) {
-				s.EXPECT().CheckData(user).Return(entity.InvalidLoginPassword)
+				s.EXPECT().CheckData(user).Return(entity.ErrInvalidLoginPassword)
 			},
 			expectedStatusCode:   401,
 			expectedResponseBody: `{"message":"invalid login or password"}`,

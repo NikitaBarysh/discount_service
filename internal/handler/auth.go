@@ -17,7 +17,7 @@ func (h *Handler) signUp(c *gin.Context) {
 	}
 
 	errValidate := h.services.Authorization.ValidateLogin(input)
-	if errors.Is(errValidate, entity.NotUniqueLogin) {
+	if errors.Is(errValidate, entity.ErrNotUniqueLogin) {
 		entity.NewErrorResponse(c, http.StatusConflict, "create new login, this is busy")
 		return
 	}

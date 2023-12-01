@@ -48,7 +48,7 @@ func (r *WithdrawRepository) SetWithdraw(withdraw entity.Withdraw, userID int) e
 	}
 
 	if !enough {
-		return entity.NotEnoughMoney
+		return entity.ErrNotEnoughMoney
 	}
 
 	updateBalance := `UPDATE users SET current = users.current - $1, withdraw = withdraw + $1 WHERE id = $2`
@@ -65,10 +65,10 @@ func (r *WithdrawRepository) SetWithdraw(withdraw entity.Withdraw, userID int) e
 	return tx.Commit()
 }
 
-func (r *WithdrawRepository) GetWithdraw(userId int) ([]entity.Withdraw, error) {
+func (r *WithdrawRepository) GetWithdraw(userID int) ([]entity.Withdraw, error) {
 	allWithdraw := make([]entity.Withdraw, 0)
 
-	err := r.db.Select(&allWithdraw, getAllWithdraw, userId)
+	err := r.db.Select(&allWithdraw, getAllWithdraw, userID)
 
 	if err != nil {
 		return nil, fmt.Errorf("err to get Withdraw: %w", err)

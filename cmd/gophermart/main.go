@@ -21,7 +21,7 @@ func main() {
 
 	db, err := repository.NewPostgresDB(ctx, cfg.DataBase)
 	if err != nil {
-		logrus.Error("main: NewPostgresDB: %s", err.Error())
+		logrus.Error("main: NewPostgresDB: %w", err)
 	}
 	storage := repository.NewRepository(db)
 	newService := service.NewService(storage)
@@ -35,6 +35,6 @@ func main() {
 
 	srv := new(app.Server)
 	if err := srv.Run(cfg.Endpoint, handlers.InitRouters()); err != nil {
-		logrus.Error("err while running server: %s", err.Error())
+		logrus.Error("err while running server: %w", err)
 	}
 }

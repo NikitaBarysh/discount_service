@@ -36,16 +36,17 @@ func (s *WorkerPool) Run(ctx context.Context) {
 		wg.Add(1)
 
 		go func() {
+		out:
 			for {
-
 				select {
 				case update := <-s.inputCH:
 					err := s.storage.UpdateStatus(update)
 					if err != nil {
 						fmt.Println("err to do request into Accrual: ", err)
 					}
+					continue
 				case <-ctx.Done():
-					return
+					break out
 				}
 			}
 			wg.Done()
@@ -67,7 +68,7 @@ func (s *WorkerPool) scheduler(ctx context.Context) *time.Ticker {
 			case <-ticker.C:
 				err := s.GetRequest()
 				if err != nil {
-					if errors.Is(err, entity.TooManyRequest) {
+					if errors.Is(err, entity.ErrTooManyRequest) {
 						ticker.Reset(time.Second * 60)
 					}
 				}
@@ -92,7 +93,7 @@ func (s *WorkerPool) GetRequest() error {
 	for _, v := range numbers {
 		res, err := s.request.RequestToAccrual(v.Order)
 		if err != nil {
-			if errors.Is(err, entity.TooManyRequest) {
+			if errors.Is(err, entity.ErrTooManyRequest) {
 				return err
 			}
 			fmt.Println(fmt.Errorf("err to do request: %w", err))

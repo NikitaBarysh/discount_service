@@ -18,14 +18,14 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
-	number, _ := strconv.Atoi(string(body))
-	if err != nil {
+	number, errConv := strconv.Atoi(string(body))
+	if errConv != nil {
 		entity.NewErrorResponse(c, http.StatusBadRequest, "can't convert to int")
 		return
 	}
 
 	res := h.services.Order.LuhnAlgorithm(number)
-	if res == false {
+	if !res {
 		entity.NewErrorResponse(c, http.StatusUnprocessableEntity, "don't pass luhn algorithm check")
 		return
 	}
@@ -43,7 +43,7 @@ func (h *Handler) setOrder(c *gin.Context) {
 	}
 
 	order := entity.Order{
-		UserId: userId.(int),
+		UserID: userId.(int),
 		Number: string(body),
 		Status: "NEW",
 	}
@@ -68,13 +68,13 @@ func (h *Handler) setOrder(c *gin.Context) {
 }
 
 func (h *Handler) getOrders(c *gin.Context) {
-	userId, errGet := c.Get(userCtx)
+	userID, errGet := c.Get(userCtx)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
 	}
 
-	res, err := h.services.Order.GetOrders(userId.(int))
+	res, err := h.services.Order.GetOrders(userID.(int))
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusNoContent, "you don't have orders")
 		return

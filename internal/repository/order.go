@@ -16,7 +16,7 @@ func NewOrderRepository(newDB *sqlx.DB) *OrderRepository {
 }
 
 func (r *OrderRepository) CreateOrder(order entity.Order) error {
-	_, errInsert := r.db.Exec(insertOrder, order.UserId, order.Number, order.Status, order.Accrual)
+	_, errInsert := r.db.Exec(insertOrder, order.UserID, order.Number, order.Status, order.Accrual)
 
 	if errInsert != nil {
 		return fmt.Errorf("err to do insert into order db")
@@ -38,13 +38,13 @@ func (r *OrderRepository) GetOrders(userID int) ([]entity.Order, error) {
 
 func (r *OrderRepository) CheckNumber(number string) bool {
 	var order entity.Order
-	r.db.Get(&order.UserId, getOrder, number)
+	r.db.Get(&order.UserID, getOrder, number)
 
-	if order.UserId == 0 {
-		return true
+	if order.UserID != 0 {
+		return false
 	}
 
-	return false
+	return true
 }
 
 func (r *OrderRepository) GetNewOrder() ([]entity.UpdateStatus, error) {

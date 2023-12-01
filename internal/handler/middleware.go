@@ -36,12 +36,12 @@ func (h *Handler) userIdentity(c *gin.Context) {
 		return
 	}
 
-	userId, err := h.services.Authorization.ParseToken(headerParts[1])
+	userID, err := h.services.Authorization.ParseToken(headerParts[1])
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusUnauthorized, "can't parse token")
 		c.Abort()
 		return
 	}
 
-	c.Set(userCtx, userId)
+	c.Set(userCtx, userID)
 }

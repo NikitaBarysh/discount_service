@@ -42,7 +42,7 @@ func (s *OrderRequest) RequestToAccrual(number string) (OrderResponse, error) {
 	}
 
 	if response.StatusCode == http.StatusTooManyRequests {
-		return OrderResponse{}, entity.TooManyRequest
+		return OrderResponse{}, entity.ErrTooManyRequest
 	}
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
