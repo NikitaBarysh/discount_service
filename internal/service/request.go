@@ -24,8 +24,8 @@ type OrderResponse struct {
 }
 
 func (s *OrderRequest) RequestToAccrual(number string) (OrderResponse, error) {
-	fmt.Println("accrual ", s.AccrualHost)
-	response, err := http.Get(s.AccrualHost + number)
+	url := fmt.Sprintf("http://localhost:8080/api/orders/%s", number)
+	response, err := http.Get(url)
 	if err != nil {
 		return OrderResponse{}, fmt.Errorf("err to get reposnse from Accrual: %w", err)
 	}
