@@ -2,11 +2,9 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"github.com/NikitaBarysh/discount_service.git/internal/handler"
-
 	"github.com/NikitaBarysh/discount_service.git/configs"
 	"github.com/NikitaBarysh/discount_service.git/internal/app"
+	"github.com/NikitaBarysh/discount_service.git/internal/handler"
 	"github.com/NikitaBarysh/discount_service.git/internal/repository"
 	"github.com/NikitaBarysh/discount_service.git/internal/service"
 	_ "github.com/lib/pq"
@@ -15,7 +13,7 @@ import (
 
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
-	cfg := configs.NewConfig()
+	cfg := configs.NewServer()
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -26,17 +24,16 @@ func main() {
 	storage := repository.NewRepository(db)
 	newService := service.NewService(storage)
 	handlers := handler.NewHandler(newService)
-	//
+
+	service.NewOrderRequest(cfg)
 	work := service.NewWorkerPool(ctx, 6, storage.Order)
 
 	go func() {
-		service.NewOrderRequest(cfg.Accrual)
-		fmt.Println("main: ", cfg.Accrual)
 		work.Run(ctx)
 	}()
 
 	srv := new(app.Server)
-	if err := srv.Run("8000", handlers.InitRouters()); err != nil {
+	if err := srv.Run(cfg.Endpoint, handlers.InitRouters()); err != nil {
 		logrus.Fatalf("err while runnig server: %s", err.Error())
 	}
 }

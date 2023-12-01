@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/NikitaBarysh/discount_service.git/internal/entity"
 	"github.com/NikitaBarysh/discount_service.git/internal/repository"
@@ -27,32 +28,29 @@ func NewWorkerPool(ctx context.Context, workers int, rep repository.Order) *Work
 }
 
 func (s *WorkerPool) Run(ctx context.Context) {
-	fmt.Println("11")
+
 	var wg sync.WaitGroup
-	fmt.Println("22")
+
 	for i := 0; i <= s.workers; i++ {
-		fmt.Println("33")
+
 		wg.Add(1)
-		fmt.Println("44")
+
 		go func() {
 			for {
-				fmt.Println("55")
+
 				select {
 				case update := <-s.inputCH:
-					fmt.Println("2")
 					err := s.storage.UpdateStatus(update)
 					if err != nil {
 						fmt.Println("err to do request into Accrual: ", err)
 					}
 				case <-ctx.Done():
-					fmt.Println("66")
 					return
 				}
 			}
 			wg.Done()
 		}()
 	}
-	fmt.Println("123123")
 	sch := s.scheduler(ctx)
 	wg.Wait()
 	close(s.inputCH)
@@ -60,29 +58,20 @@ func (s *WorkerPool) Run(ctx context.Context) {
 }
 
 func (s *WorkerPool) scheduler(ctx context.Context) *time.Ticker {
-	fmt.Println("6")
-	//ticker := time.NewTicker(time.Second * time.Duration(3))
-	//	for {
-	//		fmt.Println("7")
-	//		select {
-	//		case <-ticker.C:
-	//			fmt.Println("sched")
-	//			s.GetRequest()
-	//		case <-ctx.Done():
-	//			return nil
-	//		}
-	//	}
 
 	ticker := time.NewTicker(time.Second * 5)
 	go func() {
 		for {
-			fmt.Println(7)
+
 			select {
 			case <-ticker.C:
-				fmt.Println("sched")
-				s.GetRequest()
+				err := s.GetRequest()
+				if err != nil {
+					if errors.Is(err, entity.TooManyRequest) {
+						ticker.Reset(time.Second * 60)
+					}
+				}
 			case <-ctx.Done():
-				fmt.Println("done")
 				return
 			}
 		}
@@ -91,12 +80,10 @@ func (s *WorkerPool) scheduler(ctx context.Context) *time.Ticker {
 }
 
 func (s *WorkerPool) set(res entity.UpdateStatus) {
-	fmt.Println("set")
 	s.inputCH <- res
 }
 
 func (s *WorkerPool) GetRequest() error {
-	fmt.Println("get order")
 	numbers, err := s.storage.GetNewOrder()
 	if err != nil {
 		return fmt.Errorf("err to get new order: %w", err)
@@ -105,6 +92,9 @@ func (s *WorkerPool) GetRequest() error {
 	for _, v := range numbers {
 		res, err := s.request.RequestToAccrual(v.Order)
 		if err != nil {
+			if errors.Is(err, entity.TooManyRequest) {
+				return err
+			}
 			fmt.Println(fmt.Errorf("err to do request: %w", err))
 			continue
 		}

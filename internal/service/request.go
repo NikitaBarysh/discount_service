@@ -3,17 +3,19 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/NikitaBarysh/discount_service.git/configs"
 	"io"
 	"net/http"
-	"time"
+
+	"github.com/NikitaBarysh/discount_service.git/internal/entity"
 )
 
 type OrderRequest struct {
 	AccrualHost string
 }
 
-func NewOrderRequest(cfg string) *OrderRequest {
-	return &OrderRequest{AccrualHost: cfg}
+func NewOrderRequest(endpoint *configs.Config) OrderRequest {
+	return OrderRequest{AccrualHost: endpoint.Accrual}
 }
 
 type OrderResponse struct {
@@ -23,12 +25,7 @@ type OrderResponse struct {
 }
 
 func (s *OrderRequest) RequestToAccrual(number string) (OrderResponse, error) {
-	fmt.Println("4")
-	url := s.AccrualHost
-	fmt.Println("url", url)
-	time.Sleep(time.Second * 3)
-	fmt.Println("http://localhost:8080/" + number)
-	response, err := http.Get("http://localhost:8080/api/orders/" + number)
+	response, err := http.Get(s.AccrualHost + number)
 	if err != nil {
 		return OrderResponse{}, fmt.Errorf("err to get reposnse from Accrual: %w", err)
 	}
@@ -37,12 +34,15 @@ func (s *OrderRequest) RequestToAccrual(number string) (OrderResponse, error) {
 		return OrderResponse{}, fmt.Errorf("problem with Accrual service: %w", err)
 	}
 
-	if response.StatusCode == http.StatusNotFound {
-		return OrderResponse{}, fmt.Errorf("can't find number: %w", err)
+	if response.StatusCode == http.StatusNotFound || response.StatusCode == http.StatusNoContent {
+		return OrderResponse{
+			Order:  number,
+			Status: "INVALID",
+		}, nil
 	}
 
 	if response.StatusCode == http.StatusTooManyRequests {
-		return OrderResponse{}, fmt.Errorf("to many request: %w", err)
+		return OrderResponse{}, entity.TooManyRequest
 	}
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
@@ -53,8 +53,13 @@ func (s *OrderRequest) RequestToAccrual(number string) (OrderResponse, error) {
 	var res OrderResponse
 
 	err = json.Unmarshal(body, &res)
+
 	if err != nil {
 		return OrderResponse{}, fmt.Errorf("err to unmarshal body: %w", err)
+	}
+
+	if res.Status == "REGISTERED" || res.Status == "PROCESSING" {
+		return OrderResponse{}, fmt.Errorf("order on process")
 	}
 
 	return res, nil

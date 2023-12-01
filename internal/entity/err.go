@@ -11,6 +11,7 @@ var (
 	ErrToGenerateToken   = errors.New("error to generate token")
 	InvalidLoginPassword = errors.New("invalid login or password")
 	NotEnoughMoney       = errors.New("not enough money")
+	TooManyRequest       = errors.New("too many request")
 )
 
 type errResponse struct {

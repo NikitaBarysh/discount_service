@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+
 	"github.com/NikitaBarysh/discount_service.git/internal/entity"
 	"github.com/jmoiron/sqlx"
 )
@@ -49,17 +50,16 @@ func (r *OrderRepository) CheckNumber(number string) bool {
 func (r *OrderRepository) GetNewOrder() ([]entity.UpdateStatus, error) {
 	number := make([]entity.UpdateStatus, 0)
 	err := r.db.Select(&number, getNewOrder)
-	fmt.Println("1: ", err)
+
 	if err != nil {
 		return nil, fmt.Errorf("err to get number: %w", err)
 	}
-	fmt.Println("num: ", number)
+
 	return number, nil
 }
 
 func (r *OrderRepository) UpdateStatus(response entity.UpdateStatus) error {
 	tx, err := r.db.Begin()
-	fmt.Println("3")
 
 	if err != nil {
 		return fmt.Errorf("err to begin TX: %w", err)
