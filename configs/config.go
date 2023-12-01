@@ -100,7 +100,7 @@ func ParseServerConfig() *Config {
 	cfg := &Config{}
 
 	if cfg.RunAddr = os.Getenv("RUN_ADDRESS"); cfg.RunAddr == "" {
-		flag.StringVar(&cfg.RunAddr, "a", ":8080", "Server address")
+		flag.StringVar(&cfg.RunAddr, "a", "localhost:8080", "Server address")
 	}
 
 	if cfg.AccrualSystemAddr = os.Getenv("ACCRUAL_SYSTEM_ADDRESS"); cfg.AccrualSystemAddr == "" {
