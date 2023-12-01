@@ -19,15 +19,16 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	db, err := repository.NewPostgresDB(ctx, cfg.DataBase)
+	db, err := repository.NewPostgresDB(ctx, cfg.DatabaseDSN)
 	if err != nil {
 		logrus.Fatalf("main: NewPostgresDB: %s", err.Error())
 	}
 	storage := repository.NewRepository(db)
 	newService := service.NewService(storage)
 	handlers := handler.NewHandler(newService)
-
-	service.NewOrderRequest(cfg.Accrual)
+	url := cfg.AccrualSystemAddr
+	fmt.Println("main", url)
+	service.NewOrderRequest(url)
 	work := service.NewWorkerPool(ctx, 6, storage.Order)
 
 	go func() {
@@ -35,7 +36,7 @@ func main() {
 	}()
 
 	srv := new(app.Server)
-	if err := srv.Run(cfg.Endpoint, handlers.InitRouters()); err != nil {
+	if err := srv.Run(cfg.RunAddr, handlers.InitRouters()); err != nil {
 		logrus.Fatalf("err while runnig server: %s", err.Error())
 	}
 }

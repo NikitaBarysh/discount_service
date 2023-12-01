@@ -75,46 +75,43 @@ import (
 //}
 
 type Config struct {
-	Endpoint string
-	DataBase string
-	Accrual  string
+	RunAddr           string
+	AccrualSystemAddr string
+	DatabaseDSN       string
 }
 
-func newConfig(option options) *Config {
-	cfg := &Config{
-		Endpoint: option.url,
-		DataBase: option.dataBaseDSN,
-		Accrual:  option.accrual,
-	}
-
-	return cfg
-}
-
-type options struct {
-	url         string
-	dataBaseDSN string
-	accrual     string
-}
+//func newConfig(option options) *Config {
+//	cfg := &Config{
+//		Endpoint: option.url,
+//		DataBase: option.dataBaseDSN,
+//		Accrual:  option.accrual,
+//	}
+//
+//	return cfg
+//}
+//
+//type options struct {
+//	url         string
+//	dataBaseDSN string
+//	accrual     string
+//}
 
 func ParseServerConfig() *Config {
-	var option options
-	flag.StringVar(&option.url, "a", "8080", "address and port to run server")
-	flag.StringVar(&option.dataBaseDSN, "d", "postgres://postgres:qwerty@localhost:5434/postgres?sslmode=disable", "data base DSN")
-	flag.StringVar(&option.accrual, "r", "http://localhost:8080/api/orders/", "accrual")
+	cfg := &Config{}
+
+	if cfg.RunAddr = os.Getenv("RUN_ADDRESS"); cfg.RunAddr == "" {
+		flag.StringVar(&cfg.RunAddr, "a", "8080", "Server address")
+	}
+
+	if cfg.AccrualSystemAddr = os.Getenv("ACCRUAL_SYSTEM_ADDRESS"); cfg.AccrualSystemAddr == "" {
+		flag.StringVar(&cfg.AccrualSystemAddr, "r", "http://localhost:8080/api/orders/", "Accural system address")
+	}
+
+	if cfg.DatabaseDSN = os.Getenv("DATABASE_URI"); cfg.DatabaseDSN == "" {
+		flag.StringVar(&cfg.DatabaseDSN, "d", "postgres://postgres:qwerty@localhost:5434/postgres?sslmode=disable", "")
+	}
 
 	flag.Parse()
 
-	if addr := os.Getenv("ADDRESS"); addr != "" {
-		option.url = addr
-	}
-
-	if dataBase := os.Getenv("DATABASE_DSN"); dataBase != "" {
-		option.dataBaseDSN = dataBase
-	}
-
-	if envAccrual := os.Getenv("ACCRUAL_SYSTEM_ADDRESS"); envAccrual != "" {
-		option.accrual = envAccrual
-	}
-
-	return newConfig(option)
+	return cfg
 }
