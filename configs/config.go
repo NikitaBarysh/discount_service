@@ -98,7 +98,7 @@ type options struct {
 
 func ParseServerConfig() *Config {
 	var option options
-	flag.StringVar(&option.url, "a", "8000", "address and port to run server")
+	flag.StringVar(&option.url, "a", "8080", "address and port to run server")
 	flag.StringVar(&option.dataBaseDSN, "d", "postgres://postgres:qwerty@localhost:5434/postgres?sslmode=disable", "data base DSN")
 	flag.StringVar(&option.accrual, "r", "http://localhost:8080/api/orders/", "accrual")
 
