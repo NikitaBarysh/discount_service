@@ -3,7 +3,6 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/NikitaBarysh/discount_service.git/configs"
 	"io"
 	"net/http"
 
@@ -14,8 +13,8 @@ type OrderRequest struct {
 	AccrualHost string
 }
 
-func NewOrderRequest(endpoint *configs.Config) OrderRequest {
-	return OrderRequest{AccrualHost: endpoint.Accrual}
+func NewOrderRequest(endpoint string) OrderRequest {
+	return OrderRequest{AccrualHost: endpoint}
 }
 
 type OrderResponse struct {
@@ -25,6 +24,7 @@ type OrderResponse struct {
 }
 
 func (s *OrderRequest) RequestToAccrual(number string) (OrderResponse, error) {
+	fmt.Println("accrual ", s.AccrualHost)
 	response, err := http.Get(s.AccrualHost + number)
 	if err != nil {
 		return OrderResponse{}, fmt.Errorf("err to get reposnse from Accrual: %w", err)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/NikitaBarysh/discount_service.git/configs"
 	"github.com/NikitaBarysh/discount_service.git/internal/app"
 	"github.com/NikitaBarysh/discount_service.git/internal/handler"
@@ -13,7 +14,8 @@ import (
 
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
-	cfg := configs.NewServer()
+	cfg := configs.ParseServerConfig()
+	fmt.Println(cfg)
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -25,7 +27,7 @@ func main() {
 	newService := service.NewService(storage)
 	handlers := handler.NewHandler(newService)
 
-	service.NewOrderRequest(cfg)
+	service.NewOrderRequest(cfg.Accrual)
 	work := service.NewWorkerPool(ctx, 6, storage.Order)
 
 	go func() {
