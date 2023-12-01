@@ -115,3 +115,4 @@ func ParseServerConfig() *Config {
 
 	return cfg
 }
+go get -u
