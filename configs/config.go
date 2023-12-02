@@ -103,12 +103,12 @@ func ParseServerConfig() *Config {
 		flag.StringVar(&cfg.RunAddr, "a", "8000", "Server address")
 	}
 
-	if cfg.AccrualSystemAddr = os.Getenv("ACCRUAL_SYSTEM_ADDRESS"); cfg.AccrualSystemAddr == "" {
-		flag.StringVar(&cfg.AccrualSystemAddr, "r", "http://localhost:8080", "Accural system address")
-	}
-
 	if cfg.DatabaseDSN = os.Getenv("DATABASE_URI"); cfg.DatabaseDSN == "" {
 		flag.StringVar(&cfg.DatabaseDSN, "d", "postgres://postgres:qwerty@localhost:5434/postgres?sslmode=disable", "")
+	}
+
+	if cfg.AccrualSystemAddr = os.Getenv("ACCRUAL_SYSTEM_ADDRESS"); cfg.AccrualSystemAddr == "" {
+		flag.StringVar(&cfg.AccrualSystemAddr, "r", "", "Accural system address")
 	}
 
 	flag.Parse()
