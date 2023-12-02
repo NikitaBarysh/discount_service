@@ -31,7 +31,6 @@ func (h *Handler) signUp(c *gin.Context) {
 	token, err := h.services.Authorization.GenerateToken(input)
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't generate token")
-		return
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{
