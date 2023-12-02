@@ -36,7 +36,7 @@ func main() {
 
 	srv := new(app.Server)
 	if err := srv.Run(cfg.RunAddr, handlers.InitRouters()); err != nil {
-		fmt.Println("main: run")
+		fmt.Println("main: run", cfg.RunAddr)
 		logrus.Error("err while running server: %w", err)
 	}
 }
