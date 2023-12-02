@@ -16,14 +16,16 @@ type WorkerPool struct {
 	inputCH chan entity.UpdateStatus
 	storage repository.Order
 	request OrderRequest
+	Accrual string
 }
 
-func NewWorkerPool(ctx context.Context, workers int, rep repository.Order) *WorkerPool {
+func NewWorkerPool(ctx context.Context, workers int, rep repository.Order, accrual string) *WorkerPool {
 	return &WorkerPool{
 		ctx:     ctx,
 		workers: workers,
 		inputCH: make(chan entity.UpdateStatus, 6),
 		storage: rep,
+		Accrual: accrual,
 	}
 }
 
@@ -91,7 +93,7 @@ func (s *WorkerPool) GetRequest() error {
 	}
 
 	for _, v := range numbers {
-		res, err := s.request.RequestToAccrual(v.Order)
+		res, err := RequestToAccrual(v.Order, s.Accrual)
 		if err != nil {
 			if errors.Is(err, entity.ErrTooManyRequest) {
 				return err

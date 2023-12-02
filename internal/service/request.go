@@ -23,8 +23,9 @@ type OrderResponse struct {
 	Accrual float64 `json:"accrual"`
 }
 
-func (s *OrderRequest) RequestToAccrual(number string) (OrderResponse, error) {
-	url := fmt.Sprintf("http://localhost:8080/api/orders/%s", number)
+func RequestToAccrual(number, accrual string) (OrderResponse, error) {
+	fmt.Println("arg: ", accrual)
+	url := fmt.Sprintf("%s/api/orders/%s", accrual, number)
 	response, err := http.Get(url)
 	if err != nil {
 		return OrderResponse{}, fmt.Errorf("err to get reposnse from Accrual: %w", err)

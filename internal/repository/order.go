@@ -38,9 +38,9 @@ func (r *OrderRepository) GetOrders(userID int) ([]entity.Order, error) {
 
 func (r *OrderRepository) CheckNumber(number string) int {
 	var order entity.Order
-	r.db.Get(&order.UserID, getOrder, number)
+	r.db.Get(&order.ID, getOrder, number)
 
-	return order.UserID
+	return order.ID
 }
 
 func (r *OrderRepository) GetNewOrder() ([]entity.UpdateStatus, error) {
