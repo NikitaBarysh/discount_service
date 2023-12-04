@@ -12,6 +12,6 @@ const (
 	getNewOrder       = `SELECT number, user_id FROM orders WHERE status='NEW'`
 	updateUserBalance = `UPDATE  users SET current= current + $1 WHERE id=$2`
 	updateOrderStatus = `UPDATE orders SET status=$1 WHERE number=$2`
-	getUserIDByLogin  = `SELECT id FROM users WHERE login=$1`
+	getUserIDByLogin  = `SELECT id FROM public.users WHERE login=$1`
 	getUserOrder      = `SELECT id FROM orders WHERE user_id=$1 AND number=$2`
 )
