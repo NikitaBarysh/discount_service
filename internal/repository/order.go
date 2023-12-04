@@ -27,7 +27,7 @@ func (r *OrderRepository) CreateOrder(order entity.Order, login string) error {
 	row.Scan(&user)
 
 	_, errInsert := tx.Exec(insertOrder, user.ID, order.Number, order.Status, order.Accrual)
-
+	fmt.Println("db insert err:", err)
 	if errInsert != nil {
 		return fmt.Errorf("err to do insert into order db")
 	}
