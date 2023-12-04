@@ -43,6 +43,13 @@ func (r *OrderRepository) CheckNumber(number string) int {
 	return order.ID
 }
 
+func (r *OrderRepository) CheckUserOrder(userID int, number string) int {
+	var orderID int
+	r.db.Get(&orderID, getUserOrder, userID, number)
+
+	return orderID
+}
+
 func (r *OrderRepository) GetUserIDByLogin(login string) (int, error) {
 	var userID int
 	err := r.db.Get(&userID, getUserIDByLogin, login)

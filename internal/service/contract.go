@@ -22,6 +22,7 @@ type Order interface {
 	CheckNumber(number string) error
 	GetOrders(userID int) ([]entity.Order, error)
 	GetUserIDByLogin(login string) (int, error)
+	CheckUserOrder(userID int, number string) error
 }
 
 type Withdraw interface {

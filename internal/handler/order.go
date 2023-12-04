@@ -30,12 +30,6 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
-	errNumber := h.services.Order.CheckNumber(string(body))
-	if errNumber != nil {
-		entity.NewErrorResponse(c, http.StatusConflict, "number already exist")
-		return
-	}
-
 	userLogin, errGet := c.Get(userCtx)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userLogin")
@@ -48,6 +42,18 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
+	errNumber := h.services.Order.CheckNumber(string(body))
+	if errNumber != nil {
+		entity.NewErrorResponse(c, http.StatusConflict, "number already exist")
+		return
+	}
+
+	checkUserOrder := h.services.Order.CheckUserOrder(userID, string(body))
+	if checkUserOrder != nil {
+		entity.NewErrorResponse(c, http.StatusOK, "order already created")
+		return
+	}
+
 	order := entity.Order{
 		UserID: userID,
 		Number: string(body),
@@ -56,7 +62,7 @@ func (h *Handler) setOrder(c *gin.Context) {
 
 	err = h.services.Order.CreateOrder(order)
 	if err != nil {
-		entity.NewErrorResponse(c, http.StatusAccepted, "err to create order")
+		entity.NewErrorResponse(c, http.StatusInternalServerError, "err to create order")
 		return
 	}
 
@@ -67,7 +73,7 @@ func (h *Handler) setOrder(c *gin.Context) {
 		UploadedAt: order.UploadedAt,
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
+	c.JSON(http.StatusAccepted, map[string]interface{}{
 		"order": responseOrder,
 	})
 
