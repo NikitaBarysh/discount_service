@@ -19,7 +19,7 @@ type Authorization interface {
 
 type Order interface {
 	LuhnAlgorithm(num int) bool
-	CreateOrder(user entity.Order) error
+	CreateOrder(user entity.Order, login string) error
 	CheckNumber(number string) error
 	GetOrders(userID int) ([]entity.Order, error)
 	CheckUserOrder(userID int, number string) error

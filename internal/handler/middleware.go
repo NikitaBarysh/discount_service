@@ -43,11 +43,11 @@ func (h *Handler) userIdentity(c *gin.Context) {
 		return
 	}
 
-	id, _ := h.services.Authorization.GetUserIDByLogin(userLog)
-	//if err != nil {
-	//	entity.NewErrorResponse(c, http.StatusInternalServerError, "server error, can't get id")
-	//	return
-	//}
+	//id, _ := h.services.Authorization.GetUserIDByLogin(userLog)
+	////if err != nil {
+	////	entity.NewErrorResponse(c, http.StatusInternalServerError, "server error, can't get id")
+	////	return
+	////}
 
-	c.Set(userID, id)
+	c.Set(userLogin, userLog)
 }

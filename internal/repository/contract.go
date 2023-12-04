@@ -12,7 +12,7 @@ type Authorization interface {
 }
 
 type Order interface {
-	CreateOrder(order entity.Order) error
+	CreateOrder(order entity.Order, login string) error
 	CheckNumber(number string) int
 	GetOrders(userID int) ([]entity.Order, error)
 	GetNewOrder() ([]entity.UpdateStatus, error)

@@ -15,8 +15,8 @@ func NewOrderService(newRep *repository.Repository) *OrderService {
 	return &OrderService{rep: newRep}
 }
 
-func (s *OrderService) CreateOrder(order entity.Order) error {
-	err := s.rep.CreateOrder(order)
+func (s *OrderService) CreateOrder(order entity.Order, login string) error {
+	err := s.rep.CreateOrder(order, login)
 	fmt.Println("create order: ", err)
 	if err != nil {
 		return fmt.Errorf("create order in DB: %s", err)

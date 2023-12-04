@@ -189,17 +189,17 @@ func (mr *MockOrderMockRecorder) CheckUserOrder(userID, number interface{}) *gom
 }
 
 // CreateOrder mocks base method.
-func (m *MockOrder) CreateOrder(user entity.Order) error {
+func (m *MockOrder) CreateOrder(user entity.Order, login string) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateOrder", user)
+	ret := m.ctrl.Call(m, "CreateOrder", user, login)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // CreateOrder indicates an expected call of CreateOrder.
-func (mr *MockOrderMockRecorder) CreateOrder(user interface{}) *gomock.Call {
+func (mr *MockOrderMockRecorder) CreateOrder(user, login interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrder", reflect.TypeOf((*MockOrder)(nil).CreateOrder), user)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrder", reflect.TypeOf((*MockOrder)(nil).CreateOrder), user, login)
 }
 
 // GetOrders mocks base method.
