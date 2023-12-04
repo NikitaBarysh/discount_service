@@ -56,7 +56,7 @@ func (r *OrderRepository) GetUserIDByLogin(login string) (int, error) {
 	if err != nil {
 		return 0, fmt.Errorf("err to get id: %w", err)
 	}
-
+	fmt.Println("user id: ", userID)
 	return userID, nil
 }
 
