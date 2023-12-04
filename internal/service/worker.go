@@ -16,14 +16,16 @@ type WorkerPool struct {
 	inputCH chan entity.UpdateStatus
 	storage repository.Order
 	request OrderRequest
+	Accrual string
 }
 
-func NewWorkerPool(ctx context.Context, workers int, rep repository.Order) *WorkerPool {
+func NewWorkerPool(ctx context.Context, workers int, rep repository.Order, accrual string) *WorkerPool {
 	return &WorkerPool{
 		ctx:     ctx,
 		workers: workers,
 		inputCH: make(chan entity.UpdateStatus, 6),
 		storage: rep,
+		Accrual: accrual,
 	}
 }
 
@@ -36,16 +38,17 @@ func (s *WorkerPool) Run(ctx context.Context) {
 		wg.Add(1)
 
 		go func() {
+		out:
 			for {
-
 				select {
 				case update := <-s.inputCH:
 					err := s.storage.UpdateStatus(update)
 					if err != nil {
 						fmt.Println("err to do request into Accrual: ", err)
 					}
+					continue
 				case <-ctx.Done():
-					return
+					break out
 				}
 			}
 			wg.Done()
@@ -67,7 +70,7 @@ func (s *WorkerPool) scheduler(ctx context.Context) *time.Ticker {
 			case <-ticker.C:
 				err := s.GetRequest()
 				if err != nil {
-					if errors.Is(err, entity.TooManyRequest) {
+					if errors.Is(err, entity.ErrTooManyRequest) {
 						ticker.Reset(time.Second * 60)
 					}
 				}
@@ -90,9 +93,9 @@ func (s *WorkerPool) GetRequest() error {
 	}
 
 	for _, v := range numbers {
-		res, err := s.request.RequestToAccrual(v.Order)
+		res, err := RequestToAccrual(v.Order, s.Accrual)
 		if err != nil {
-			if errors.Is(err, entity.TooManyRequest) {
+			if errors.Is(err, entity.ErrTooManyRequest) {
 				return err
 			}
 			fmt.Println(fmt.Errorf("err to do request: %w", err))

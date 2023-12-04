@@ -18,17 +18,26 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
-	number, _ := strconv.Atoi(string(body))
-	if err != nil {
+	number, errConv := strconv.Atoi(string(body))
+	if errConv != nil {
 		entity.NewErrorResponse(c, http.StatusBadRequest, "can't convert to int")
 		return
 	}
 
 	res := h.services.Order.LuhnAlgorithm(number)
-	if res == false {
+	if !res {
 		entity.NewErrorResponse(c, http.StatusUnprocessableEntity, "don't pass luhn algorithm check")
 		return
 	}
+
+	//fmt.Println("cast login to string", userLogin.(string))
+	//userID, err := h.services.Authorization.GetUserIDByLogin(userLogin.(string))
+	//fmt.Println("handler user id: ", userID)
+	//fmt.Println("err ", err)
+	//if err != nil {
+	//	entity.NewErrorResponse(c, http.StatusNotFound, "can't get userID")
+	//	return
+	//}
 
 	errNumber := h.services.Order.CheckNumber(string(body))
 	if errNumber != nil {
@@ -36,14 +45,14 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
-	userId, errGet := c.Get(userCtx)
+	userID, errGet := c.Get(userCtx)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
 	}
 
 	order := entity.Order{
-		UserId: userId.(int),
+		UserID: userID.(int),
 		Number: string(body),
 		Status: "NEW",
 	}
@@ -61,20 +70,19 @@ func (h *Handler) setOrder(c *gin.Context) {
 		UploadedAt: order.UploadedAt,
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
+	c.JSON(http.StatusAccepted, map[string]interface{}{
 		"order": responseOrder,
 	})
-
 }
 
 func (h *Handler) getOrders(c *gin.Context) {
-	userId, errGet := c.Get(userCtx)
+	userID, errGet := c.Get(userCtx)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
 	}
 
-	res, err := h.services.Order.GetOrders(userId.(int))
+	res, err := h.services.Order.GetOrders(userID.(int))
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusNoContent, "you don't have orders")
 		return

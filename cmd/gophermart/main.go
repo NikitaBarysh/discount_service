@@ -21,13 +21,14 @@ func main() {
 
 	db, err := repository.NewPostgresDB(ctx, cfg.DatabaseDSN)
 	if err != nil {
-		logrus.Fatalf("main: NewPostgresDB: %s", err.Error())
+		fmt.Println("main: postgres")
+		logrus.Error("main: NewPostgresDB: %w", err)
 	}
 	storage := repository.NewRepository(db)
 	newService := service.NewService(storage)
 	handlers := handler.NewHandler(newService)
-	service.NewOrderRequest(cfg.AccrualSystemAddr)
-	work := service.NewWorkerPool(ctx, 6, storage.Order)
+	
+	work := service.NewWorkerPool(ctx, 6, storage.Order, cfg.AccrualSystemAddr)
 
 	go func() {
 		work.Run(ctx)
@@ -35,6 +36,7 @@ func main() {
 
 	srv := new(app.Server)
 	if err := srv.Run(cfg.RunAddr, handlers.InitRouters()); err != nil {
-		logrus.Fatalf("err while runnig server: %s", err.Error())
+		fmt.Println("main: run", cfg.RunAddr)
+		logrus.Error("err while running server: %w", err)
 	}
 }

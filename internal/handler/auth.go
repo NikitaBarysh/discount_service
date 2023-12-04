@@ -8,6 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const userID = "user_id"
+
 func (h *Handler) signUp(c *gin.Context) {
 	var input entity.User
 
@@ -17,7 +19,7 @@ func (h *Handler) signUp(c *gin.Context) {
 	}
 
 	errValidate := h.services.Authorization.ValidateLogin(input)
-	if errors.Is(errValidate, entity.NotUniqueLogin) {
+	if errors.Is(errValidate, entity.ErrNotUniqueLogin) {
 		entity.NewErrorResponse(c, http.StatusConflict, "create new login, this is busy")
 		return
 	}
@@ -38,7 +40,8 @@ func (h *Handler) signUp(c *gin.Context) {
 		"status": "user created",
 		"token":  token,
 	})
-
+	c.Header("Authorization", "Bearer "+token)
+	c.IndentedJSON(http.StatusOK, token)
 }
 
 func (h *Handler) signIn(c *gin.Context) {

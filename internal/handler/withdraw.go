@@ -10,13 +10,13 @@ import (
 )
 
 func (h *Handler) getBalance(c *gin.Context) {
-	userId, errGet := c.Get(userCtx)
+	userID, errGet := c.Get(userCtx)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
 	}
 
-	balance, err := h.services.Withdraw.GetBalance(userId.(int))
+	balance, err := h.services.Withdraw.GetBalance(userID.(int))
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "err to get balance")
 		return
@@ -52,15 +52,15 @@ func (h *Handler) useWithdraw(c *gin.Context) {
 		return
 	}
 
-	userId, errGet := c.Get(userCtx)
+	userID, errGet := c.Get(userCtx)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
 	}
 
-	err = h.services.Withdraw.SetWithdraw(withdraw, userId.(int))
+	err = h.services.Withdraw.SetWithdraw(withdraw, userID.(int))
 	if err != nil {
-		if errors.Is(err, entity.NotEnoughMoney) {
+		if errors.Is(err, entity.ErrNotEnoughMoney) {
 			entity.NewErrorResponse(c, http.StatusPaymentRequired, "not enough money")
 			return
 		}
@@ -73,13 +73,13 @@ func (h *Handler) useWithdraw(c *gin.Context) {
 }
 
 func (h *Handler) getWithdraw(c *gin.Context) {
-	userId, errGet := c.Get(userCtx)
+	userID, errGet := c.Get(userCtx)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get user id")
 		return
 	}
 
-	withdraw, err := h.services.Withdraw.GetWithdraw(userId.(int))
+	withdraw, err := h.services.Withdraw.GetWithdraw(userID.(int))
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusNoContent, "history is empty")
 		return

@@ -7,11 +7,11 @@ import (
 )
 
 var (
-	NotUniqueLogin       = errors.New(`login is busy`)
-	ErrToGenerateToken   = errors.New("error to generate token")
-	InvalidLoginPassword = errors.New("invalid login or password")
-	NotEnoughMoney       = errors.New("not enough money")
-	TooManyRequest       = errors.New("too many request")
+	ErrNotUniqueLogin       = errors.New(`login is busy`)
+	ErrToGenerateToken      = errors.New("error to generate token")
+	ErrInvalidLoginPassword = errors.New("invalid login or password")
+	ErrNotEnoughMoney       = errors.New("not enough money")
+	ErrTooManyRequest       = errors.New("too many request")
 )
 
 type errResponse struct {

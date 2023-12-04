@@ -13,13 +13,13 @@ import (
 
 const (
 	salt       = "32po34hf982v29"
-	tokenTTL   = time.Hour * 3
+	tokenTTL   = time.Hour * 24
 	signingKey = "232okc0andha298rudf23r03uc"
 )
 
 type claims struct {
 	jwt.RegisteredClaims
-	UserId int `json:"id"`
+	UserID int `json:"id"`
 }
 
 type AuthService struct {
@@ -54,10 +54,21 @@ func (s *AuthService) GenerateToken(userData entity.User) (string, error) {
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(tokenTTL)),
 		},
-		UserId: user.Id,
+		UserID: user.ID,
 	})
 
 	return token.SignedString([]byte(signingKey))
+}
+
+func (s *AuthService) GetUserIDByLogin(login string) (int, error) {
+	fmt.Println("service login: ", login)
+	userID, err := s.rep.GetUserIDByLogin(login)
+	fmt.Println("service userId: ", userID)
+	fmt.Println("service err: ", err)
+	if err != nil {
+		return 0, fmt.Errorf("get ID from DB: %w", err)
+	}
+	return userID, nil
 }
 
 func (s *AuthService) ParseToken(authToken string) (int, error) {
@@ -78,7 +89,7 @@ func (s *AuthService) ParseToken(authToken string) (int, error) {
 		return 0, errors.New("wrong type of token claims")
 	}
 
-	return claims.UserId, nil
+	return claims.UserID, nil
 }
 
 func (s *AuthService) ValidateLogin(user entity.User) error {
@@ -91,7 +102,7 @@ func (s *AuthService) ValidateLogin(user entity.User) error {
 		return nil
 	}
 
-	return entity.NotUniqueLogin
+	return entity.ErrNotUniqueLogin
 }
 
 func (s *AuthService) CheckData(user entity.User) error {

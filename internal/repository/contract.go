@@ -8,20 +8,22 @@ import (
 type Authorization interface {
 	CreateUser(user entity.User) error
 	GetUser(login, password string) (entity.User, error)
+	GetUserIDByLogin(login string) (int, error)
 }
 
 type Order interface {
 	CreateOrder(order entity.Order) error
-	CheckNumber(number string) bool
+	CheckNumber(number string) int
 	GetOrders(userID int) ([]entity.Order, error)
 	GetNewOrder() ([]entity.UpdateStatus, error)
 	UpdateStatus(response entity.UpdateStatus) error
+	CheckUserOrder(userID int, number string) int
 }
 
 type Withdraw interface {
 	GetBalance(userID int) (entity.Balance, error)
 	SetWithdraw(withdraw entity.Withdraw, userID int) error
-	GetWithdraw(userId int) ([]entity.Withdraw, error)
+	GetWithdraw(userID int) ([]entity.Withdraw, error)
 }
 
 type Repository struct {

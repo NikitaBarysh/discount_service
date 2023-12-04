@@ -1,7 +1,7 @@
 package repository
 
 const (
-	insertUser        = `INSERT INTO users (login, password) VALUES ($1, $2)`
+	insertUser        = `INSERT INTO users (login, password) VALUES ($1, $2) RETURNING id`
 	getUser           = `SELECT id, login, password FROM users WHERE  login=$1 AND password=$2`
 	insertOrder       = `INSERT INTO orders (user_id, number, status, accrual) VALUES ($1, $2, $3, $4)`
 	getOrder          = `SELECT id FROM orders WHERE number=$1`
@@ -12,4 +12,6 @@ const (
 	getNewOrder       = `SELECT number, user_id FROM orders WHERE status='NEW'`
 	updateUserBalance = `UPDATE  users SET current= current + $1 WHERE id=$2`
 	updateOrderStatus = `UPDATE orders SET status=$1 WHERE number=$2`
+	getUserIDByLogin  = `SELECT id FROM "users" WHERE login=$1`
+	getUserOrder      = `SELECT id FROM orders WHERE user_id=$1 AND number=$2`
 )

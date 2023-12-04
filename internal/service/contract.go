@@ -14,6 +14,7 @@ type Authorization interface {
 	ValidateLogin(user entity.User) error
 	CheckData(user entity.User) error
 	GetUser(userData entity.User) (entity.User, error)
+	GetUserIDByLogin(login string) (int, error)
 }
 
 type Order interface {
@@ -26,10 +27,7 @@ type Order interface {
 type Withdraw interface {
 	GetBalance(userID int) (entity.Balance, error)
 	SetWithdraw(withdraw entity.Withdraw, userID int) error
-	GetWithdraw(userId int) ([]entity.Withdraw, error)
-}
-
-type Worker interface {
+	GetWithdraw(userID int) ([]entity.Withdraw, error)
 }
 
 type Service struct {

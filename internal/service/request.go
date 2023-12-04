@@ -23,8 +23,9 @@ type OrderResponse struct {
 	Accrual float64 `json:"accrual"`
 }
 
-func (s *OrderRequest) RequestToAccrual(number string) (OrderResponse, error) {
-	url := fmt.Sprintf("%s/api/orders/%s", s.AccrualHost, number)
+func RequestToAccrual(number, accrual string) (OrderResponse, error) {
+	fmt.Println("arg: ", accrual)
+	url := fmt.Sprintf("%s/api/orders/%s", accrual, number)
 	response, err := http.Get(url)
 	if err != nil {
 		return OrderResponse{}, fmt.Errorf("err to get reposnse from Accrual: %w", err)
@@ -42,7 +43,7 @@ func (s *OrderRequest) RequestToAccrual(number string) (OrderResponse, error) {
 	}
 
 	if response.StatusCode == http.StatusTooManyRequests {
-		return OrderResponse{}, entity.TooManyRequest
+		return OrderResponse{}, entity.ErrTooManyRequest
 	}
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
