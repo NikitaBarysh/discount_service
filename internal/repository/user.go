@@ -51,15 +51,15 @@ func (r *AuthPostgres) GetUser(login, password string) (entity.User, error) {
 	var user entity.User
 	row := r.db.QueryRow(getUser, login, password)
 	fmt.Println("db get user: ", row.Err())
-	err := row.Scan(&user)
+	err := row.Scan(&user.ID, &user.Login, &user.Password)
 	fmt.Println("db scan: ", err)
 	if err != nil {
 		return entity.User{}, fmt.Errorf("err to scan: %w", err)
 	}
 	fmt.Println("db user: ", user)
-	if err != nil {
-		return entity.User{}, fmt.Errorf("err to get user form db: %w", err)
-	}
+	//if err != nil {
+	//	return entity.User{}, fmt.Errorf("err to get user form db: %w", err)
+	//}
 
 	return user, nil
 }
