@@ -39,9 +39,15 @@ func (h *Handler) userIdentity(c *gin.Context) {
 	userLog, err := h.services.Authorization.ParseToken(headerParts[1])
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusUnauthorized, "can't parse token")
-		//c.Abort()
+		c.Abort()
 		return
 	}
 
-	c.Set(userLogin, userLog)
+	id, err := h.services.Authorization.GetUserIDByLogin(userLog)
+	if err != nil {
+		entity.NewErrorResponse(c, http.StatusInternalServerError, "server error, can't get id")
+		return
+	}
+
+	c.Set(userID, id)
 }

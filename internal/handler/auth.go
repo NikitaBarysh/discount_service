@@ -26,6 +26,8 @@ func (h *Handler) signUp(c *gin.Context) {
 	}
 
 	id, err := h.services.Authorization.CreateUser(input)
+	fmt.Println("auth id:", id)
+	fmt.Println("auth err:", err)
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "server error, can't do registration")
 		return
