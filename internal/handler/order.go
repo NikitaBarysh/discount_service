@@ -39,8 +39,9 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
+	userLog := userLogin.(string)
 	fmt.Println("cast login to string", userLogin.(string))
-	userID, err := h.services.Order.GetUserIDByLogin(userLogin.(string))
+	userID, err := h.services.Order.GetUserIDByLogin(userLog)
 	fmt.Println("handler user id: ", userID)
 	fmt.Println("err ", err)
 	if err != nil {
