@@ -62,7 +62,7 @@ func (h *Handler) setOrder(c *gin.Context) {
 
 	err = h.services.Order.CreateOrder(order)
 	if err != nil {
-		entity.NewErrorResponse(c, http.StatusInternalServerError, "err to create order")
+		entity.NewErrorResponse(c, http.StatusNotFound, "err to create order")
 		return
 	}
 
@@ -76,7 +76,6 @@ func (h *Handler) setOrder(c *gin.Context) {
 	c.JSON(http.StatusAccepted, map[string]interface{}{
 		"order": responseOrder,
 	})
-
 }
 
 func (h *Handler) getOrders(c *gin.Context) {
