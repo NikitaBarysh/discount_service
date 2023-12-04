@@ -29,9 +29,9 @@ func (h *Handler) signUp(c *gin.Context) {
 		return
 	}
 
-	token, err := h.services.Authorization.GenerateToken(input)
-	fmt.Println("token: ", token)
-	if err != nil {
+	token, errToken := h.services.Authorization.GenerateToken(input)
+	fmt.Println("token err: ", errToken)
+	if errToken != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't generate token")
 		return
 	}
