@@ -62,7 +62,7 @@ func (h *Handler) setOrder(c *gin.Context) {
 	}
 
 	order := entity.Order{
-		UserID: userID,
+		//UserID: userID,
 		Number: string(body),
 		Status: "NEW",
 	}

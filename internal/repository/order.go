@@ -51,16 +51,16 @@ func (r *OrderRepository) CheckUserOrder(userID int, number string) int {
 }
 
 func (r *OrderRepository) GetUserIDByLogin(login string) (int, error) {
-	var userID int
+	var user entity.User
 	//SELECT id FROM users WHERE login=$1
 	fmt.Println("rep login: ", login)
-	err := r.db.Get(&userID, `SELECT id FROM users WHERE login=$1`, login)
+	err := r.db.Get(&user, `SELECT id, login, password FROM users WHERE  login=$1`, login)
 	fmt.Println("rep err: ", err)
-	fmt.Println("user id: ", userID)
+	fmt.Println("user id: ", user.ID)
 	if err != nil {
 		return 0, fmt.Errorf("err to get id: %w", err)
 	}
-	return userID, nil
+	return user.ID, nil
 }
 
 func (r *OrderRepository) GetNewOrder() ([]entity.UpdateStatus, error) {
