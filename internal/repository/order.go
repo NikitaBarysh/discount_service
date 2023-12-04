@@ -18,16 +18,22 @@ func NewOrderRepository(newDB *sqlx.DB) *OrderRepository {
 func (r *OrderRepository) CreateOrder(order entity.Order, login string) error {
 	var user entity.User
 	tx, err := r.db.Begin()
+	fmt.Println("db begin tx: ", err)
 	if err != nil {
 		return fmt.Errorf("err to do Scan: %w", err)
 	}
 
 	row := tx.QueryRow(getUserIDByLogin, login)
+	fmt.Println(row.Err())
+	if row.Err() != nil {
+		return fmt.Errorf("db query row: %w", row.Err())
+	}
 
-	row.Scan(&user)
+	err = row.Scan(&user)
+	fmt.Println("db scan err: ", err)
 
 	_, errInsert := tx.Exec(insertOrder, user.ID, order.Number, order.Status, order.Accrual)
-	fmt.Println("db insert err:", err)
+	fmt.Println("db insert err:", errInsert)
 	if errInsert != nil {
 		return fmt.Errorf("err to do insert into order db")
 	}
