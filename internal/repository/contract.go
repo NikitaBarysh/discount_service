@@ -16,6 +16,7 @@ type Order interface {
 	GetOrders(userID int) ([]entity.Order, error)
 	GetNewOrder() ([]entity.UpdateStatus, error)
 	UpdateStatus(response entity.UpdateStatus) error
+	GetUserIDByLogin(login string) (int, error)
 }
 
 type Withdraw interface {

@@ -43,6 +43,16 @@ func (r *OrderRepository) CheckNumber(number string) int {
 	return order.ID
 }
 
+func (r *OrderRepository) GetUserIDByLogin(login string) (int, error) {
+	var userID int
+	err := r.db.Get(&userID, getUserIDByLogin, login)
+	if err != nil {
+		return 0, fmt.Errorf("err to get id: %w", err)
+	}
+
+	return userID, nil
+}
+
 func (r *OrderRepository) GetNewOrder() ([]entity.UpdateStatus, error) {
 	number := make([]entity.UpdateStatus, 0)
 	err := r.db.Select(&number, getNewOrder)
