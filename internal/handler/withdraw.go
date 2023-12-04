@@ -10,13 +10,19 @@ import (
 )
 
 func (h *Handler) getBalance(c *gin.Context) {
-	userID, errGet := c.Get(userCtx)
+	userLogin, errGet := c.Get(userCtx)
 	if !errGet {
+		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userLogin")
+		return
+	}
+
+	userID, err := h.services.Order.GetUserIDByLogin(userLogin.(string))
+	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
 	}
 
-	balance, err := h.services.Withdraw.GetBalance(userID.(int))
+	balance, err := h.services.Withdraw.GetBalance(userID)
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "err to get balance")
 		return
@@ -52,13 +58,19 @@ func (h *Handler) useWithdraw(c *gin.Context) {
 		return
 	}
 
-	userID, errGet := c.Get(userCtx)
+	userLogin, errGet := c.Get(userCtx)
 	if !errGet {
+		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userLogin")
+		return
+	}
+
+	userID, err := h.services.Order.GetUserIDByLogin(userLogin.(string))
+	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
 	}
 
-	err = h.services.Withdraw.SetWithdraw(withdraw, userID.(int))
+	err = h.services.Withdraw.SetWithdraw(withdraw, userID)
 	if err != nil {
 		if errors.Is(err, entity.ErrNotEnoughMoney) {
 			entity.NewErrorResponse(c, http.StatusPaymentRequired, "not enough money")
@@ -73,13 +85,19 @@ func (h *Handler) useWithdraw(c *gin.Context) {
 }
 
 func (h *Handler) getWithdraw(c *gin.Context) {
-	userID, errGet := c.Get(userCtx)
+	userLogin, errGet := c.Get(userCtx)
 	if !errGet {
-		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get user id")
+		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userLogin")
 		return
 	}
 
-	withdraw, err := h.services.Withdraw.GetWithdraw(userID.(int))
+	userID, err := h.services.Order.GetUserIDByLogin(userLogin.(string))
+	if err != nil {
+		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
+		return
+	}
+
+	withdraw, err := h.services.Withdraw.GetWithdraw(userID)
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusNoContent, "history is empty")
 		return
