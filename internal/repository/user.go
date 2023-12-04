@@ -50,6 +50,8 @@ func (r *AuthPostgres) GetUserIDByLogin(login string) (int, error) {
 func (r *AuthPostgres) GetUser(login, password string) (entity.User, error) {
 	var user entity.User
 	err := r.db.Get(&user, getUser, login, password)
+	fmt.Println("db get user: ", err)
+	fmt.Println("db user: ", user)
 	if err != nil {
 		return entity.User{}, fmt.Errorf("err to get user form db: %w", err)
 	}

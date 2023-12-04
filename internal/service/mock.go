@@ -173,32 +173,18 @@ func (mr *MockOrderMockRecorder) CheckNumber(number interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckNumber", reflect.TypeOf((*MockOrder)(nil).CheckNumber), number)
 }
 
-// CheckUserOrder mocks base method.
-func (m *MockOrder) CheckUserOrder(userID int, number string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CheckUserOrder", userID, number)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// CheckUserOrder indicates an expected call of CheckUserOrder.
-func (mr *MockOrderMockRecorder) CheckUserOrder(userID, number interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckUserOrder", reflect.TypeOf((*MockOrder)(nil).CheckUserOrder), userID, number)
-}
-
 // CreateOrder mocks base method.
-func (m *MockOrder) CreateOrder(user entity.Order, login string) error {
+func (m *MockOrder) CreateOrder(user entity.Order) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateOrder", user, login)
+	ret := m.ctrl.Call(m, "CreateOrder", user)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // CreateOrder indicates an expected call of CreateOrder.
-func (mr *MockOrderMockRecorder) CreateOrder(user, login interface{}) *gomock.Call {
+func (mr *MockOrderMockRecorder) CreateOrder(user interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrder", reflect.TypeOf((*MockOrder)(nil).CreateOrder), user, login)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrder", reflect.TypeOf((*MockOrder)(nil).CreateOrder), user)
 }
 
 // GetOrders mocks base method.
@@ -295,27 +281,4 @@ func (m *MockWithdraw) SetWithdraw(withdraw entity.Withdraw, userID int) error {
 func (mr *MockWithdrawMockRecorder) SetWithdraw(withdraw, userID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetWithdraw", reflect.TypeOf((*MockWithdraw)(nil).SetWithdraw), withdraw, userID)
-}
-
-// MockWorker is a mock of Worker interface.
-type MockWorker struct {
-	ctrl     *gomock.Controller
-	recorder *MockWorkerMockRecorder
-}
-
-// MockWorkerMockRecorder is the mock recorder for MockWorker.
-type MockWorkerMockRecorder struct {
-	mock *MockWorker
-}
-
-// NewMockWorker creates a new mock instance.
-func NewMockWorker(ctrl *gomock.Controller) *MockWorker {
-	mock := &MockWorker{ctrl: ctrl}
-	mock.recorder = &MockWorkerMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockWorker) EXPECT() *MockWorkerMockRecorder {
-	return m.recorder
 }
