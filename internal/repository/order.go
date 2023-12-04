@@ -54,7 +54,7 @@ func (r *OrderRepository) GetUserIDByLogin(login string) (int, error) {
 	var userID int
 	//SELECT id FROM users WHERE login=$1
 	fmt.Println("rep login: ", login)
-	err := r.db.Get(&userID, getUserIDByLogin, login)
+	err := r.db.Get(&userID, `SELECT id FROM users WHERE login=$1`, login)
 	fmt.Println("rep err: ", err)
 	fmt.Println("user id: ", userID)
 	if err != nil {
