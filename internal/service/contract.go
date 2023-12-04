@@ -14,6 +14,7 @@ type Authorization interface {
 	ValidateLogin(user entity.User) error
 	CheckData(user entity.User) error
 	GetUser(userData entity.User) (entity.User, error)
+	GetUserIDByLogin(login string) (int, error)
 }
 
 type Order interface {
@@ -21,7 +22,6 @@ type Order interface {
 	CreateOrder(user entity.Order) error
 	CheckNumber(number string) error
 	GetOrders(userID int) ([]entity.Order, error)
-	GetUserIDByLogin(login string) (int, error)
 	CheckUserOrder(userID int, number string) error
 }
 

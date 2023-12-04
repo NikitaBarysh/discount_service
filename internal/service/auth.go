@@ -60,6 +60,17 @@ func (s *AuthService) GenerateToken(userData entity.User) (string, error) {
 	return token.SignedString([]byte(signingKey))
 }
 
+func (s *AuthService) GetUserIDByLogin(login string) (int, error) {
+	fmt.Println("service login: ", login)
+	userID, err := s.rep.GetUserIDByLogin(login)
+	fmt.Println("service userId: ", userID)
+	fmt.Println("service err: ", err)
+	if err != nil {
+		return 0, fmt.Errorf("get ID from DB: %w", err)
+	}
+	return userID, nil
+}
+
 func (s *AuthService) ParseToken(authToken string) (string, error) {
 	token, err := jwt.ParseWithClaims(authToken, &claims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {

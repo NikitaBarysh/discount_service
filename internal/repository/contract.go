@@ -8,6 +8,7 @@ import (
 type Authorization interface {
 	CreateUser(user entity.User) error
 	GetUser(login, password string) (entity.User, error)
+	GetUserIDByLogin(login string) (int, error)
 }
 
 type Order interface {
@@ -16,7 +17,6 @@ type Order interface {
 	GetOrders(userID int) ([]entity.Order, error)
 	GetNewOrder() ([]entity.UpdateStatus, error)
 	UpdateStatus(response entity.UpdateStatus) error
-	GetUserIDByLogin(login string) (int, error)
 	CheckUserOrder(userID int, number string) int
 }
 

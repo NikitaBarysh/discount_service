@@ -39,9 +39,8 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
-	userLog := userLogin.(string)
 	fmt.Println("cast login to string", userLogin.(string))
-	userID, err := h.services.Order.GetUserIDByLogin(userLog)
+	userID, err := h.services.Authorization.GetUserIDByLogin(userLogin.(string))
 	fmt.Println("handler user id: ", userID)
 	fmt.Println("err ", err)
 	if err != nil {
@@ -92,7 +91,7 @@ func (h *Handler) getOrders(c *gin.Context) {
 		return
 	}
 
-	userID, err := h.services.Order.GetUserIDByLogin(userLogin.(string))
+	userID, err := h.services.Authorization.GetUserIDByLogin(userLogin.(string))
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return

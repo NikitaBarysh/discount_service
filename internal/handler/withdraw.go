@@ -16,7 +16,7 @@ func (h *Handler) getBalance(c *gin.Context) {
 		return
 	}
 
-	userID, err := h.services.Order.GetUserIDByLogin(userLogin.(string))
+	userID, err := h.services.Authorization.GetUserIDByLogin(userLogin.(string))
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
@@ -64,7 +64,7 @@ func (h *Handler) useWithdraw(c *gin.Context) {
 		return
 	}
 
-	userID, err := h.services.Order.GetUserIDByLogin(userLogin.(string))
+	userID, err := h.services.Authorization.GetUserIDByLogin(userLogin.(string))
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
@@ -91,7 +91,7 @@ func (h *Handler) getWithdraw(c *gin.Context) {
 		return
 	}
 
-	userID, err := h.services.Order.GetUserIDByLogin(userLogin.(string))
+	userID, err := h.services.Authorization.GetUserIDByLogin(userLogin.(string))
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
