@@ -25,19 +25,16 @@ func (h *Handler) signUp(c *gin.Context) {
 	err := h.services.Authorization.CreateUser(input)
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "server error, can't do registration")
-
+		return
 	}
 
 	token, err := h.services.Authorization.GenerateToken(input)
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't generate token")
+		return
 	}
-
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"status": "user created",
-		"token":  token,
-	})
-
+	c.Header("Authorization", "Bearer "+token)
+	c.IndentedJSON(http.StatusOK, token)
 }
 
 func (h *Handler) signIn(c *gin.Context) {
