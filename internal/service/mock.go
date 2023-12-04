@@ -93,10 +93,10 @@ func (mr *MockAuthorizationMockRecorder) GetUser(userData interface{}) *gomock.C
 }
 
 // ParseToken mocks base method.
-func (m *MockAuthorization) ParseToken(token string) (int, error) {
+func (m *MockAuthorization) ParseToken(token string) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ParseToken", token)
-	ret0, _ := ret[0].(int)
+	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -144,6 +144,20 @@ func (m *MockOrder) EXPECT() *MockOrderMockRecorder {
 	return m.recorder
 }
 
+// CheckNumber mocks base method.
+func (m *MockOrder) CheckNumber(number string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CheckNumber", number)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CheckNumber indicates an expected call of CheckNumber.
+func (mr *MockOrderMockRecorder) CheckNumber(number interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckNumber", reflect.TypeOf((*MockOrder)(nil).CheckNumber), number)
+}
+
 // CreateOrder mocks base method.
 func (m *MockOrder) CreateOrder(user entity.Order) error {
 	m.ctrl.T.Helper()
@@ -158,6 +172,21 @@ func (mr *MockOrderMockRecorder) CreateOrder(user interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrder", reflect.TypeOf((*MockOrder)(nil).CreateOrder), user)
 }
 
+// GetOrders mocks base method.
+func (m *MockOrder) GetOrders(userID int) ([]entity.Order, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetOrders", userID)
+	ret0, _ := ret[0].([]entity.Order)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetOrders indicates an expected call of GetOrders.
+func (mr *MockOrderMockRecorder) GetOrders(userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrders", reflect.TypeOf((*MockOrder)(nil).GetOrders), userID)
+}
+
 // LuhnAlgorithm mocks base method.
 func (m *MockOrder) LuhnAlgorithm(num int) bool {
 	m.ctrl.T.Helper()
@@ -170,4 +199,94 @@ func (m *MockOrder) LuhnAlgorithm(num int) bool {
 func (mr *MockOrderMockRecorder) LuhnAlgorithm(num interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LuhnAlgorithm", reflect.TypeOf((*MockOrder)(nil).LuhnAlgorithm), num)
+}
+
+// MockWithdraw is a mock of Withdraw interface.
+type MockWithdraw struct {
+	ctrl     *gomock.Controller
+	recorder *MockWithdrawMockRecorder
+}
+
+// MockWithdrawMockRecorder is the mock recorder for MockWithdraw.
+type MockWithdrawMockRecorder struct {
+	mock *MockWithdraw
+}
+
+// NewMockWithdraw creates a new mock instance.
+func NewMockWithdraw(ctrl *gomock.Controller) *MockWithdraw {
+	mock := &MockWithdraw{ctrl: ctrl}
+	mock.recorder = &MockWithdrawMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockWithdraw) EXPECT() *MockWithdrawMockRecorder {
+	return m.recorder
+}
+
+// GetBalance mocks base method.
+func (m *MockWithdraw) GetBalance(userID int) (entity.Balance, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetBalance", userID)
+	ret0, _ := ret[0].(entity.Balance)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetBalance indicates an expected call of GetBalance.
+func (mr *MockWithdrawMockRecorder) GetBalance(userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBalance", reflect.TypeOf((*MockWithdraw)(nil).GetBalance), userID)
+}
+
+// GetWithdraw mocks base method.
+func (m *MockWithdraw) GetWithdraw(userID int) ([]entity.Withdraw, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetWithdraw", userID)
+	ret0, _ := ret[0].([]entity.Withdraw)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetWithdraw indicates an expected call of GetWithdraw.
+func (mr *MockWithdrawMockRecorder) GetWithdraw(userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetWithdraw", reflect.TypeOf((*MockWithdraw)(nil).GetWithdraw), userID)
+}
+
+// SetWithdraw mocks base method.
+func (m *MockWithdraw) SetWithdraw(withdraw entity.Withdraw, userID int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetWithdraw", withdraw, userID)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetWithdraw indicates an expected call of SetWithdraw.
+func (mr *MockWithdrawMockRecorder) SetWithdraw(withdraw, userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetWithdraw", reflect.TypeOf((*MockWithdraw)(nil).SetWithdraw), withdraw, userID)
+}
+
+// MockWorker is a mock of Worker interface.
+type MockWorker struct {
+	ctrl     *gomock.Controller
+	recorder *MockWorkerMockRecorder
+}
+
+// MockWorkerMockRecorder is the mock recorder for MockWorker.
+type MockWorkerMockRecorder struct {
+	mock *MockWorker
+}
+
+// NewMockWorker creates a new mock instance.
+func NewMockWorker(ctrl *gomock.Controller) *MockWorker {
+	mock := &MockWorker{ctrl: ctrl}
+	mock.recorder = &MockWorkerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockWorker) EXPECT() *MockWorkerMockRecorder {
+	return m.recorder
 }
