@@ -53,10 +53,10 @@ func (r *OrderRepository) CheckUserOrder(userID int, number string) int {
 func (r *OrderRepository) GetUserIDByLogin(login string) (int, error) {
 	var userID int
 	err := r.db.Get(&userID, getUserIDByLogin, login)
+	fmt.Println("user id: ", userID)
 	if err != nil {
 		return 0, fmt.Errorf("err to get id: %w", err)
 	}
-	fmt.Println("user id: ", userID)
 	return userID, nil
 }
 
