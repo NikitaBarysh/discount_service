@@ -27,7 +27,7 @@ func main() {
 	storage := repository.NewRepository(db)
 	newService := service.NewService(storage)
 	handlers := handler.NewHandler(newService)
-	//service.NewOrderRequest("some data")
+	
 	work := service.NewWorkerPool(ctx, 6, storage.Order, cfg.AccrualSystemAddr)
 
 	go func() {

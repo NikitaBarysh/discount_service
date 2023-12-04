@@ -10,7 +10,7 @@ import (
 type Authorization interface {
 	CreateUser(user entity.User) error
 	GenerateToken(user entity.User) (string, error)
-	ParseToken(token string) (int, error)
+	ParseToken(token string) (string, error)
 	ValidateLogin(user entity.User) error
 	CheckData(user entity.User) error
 	GetUser(userData entity.User) (entity.User, error)

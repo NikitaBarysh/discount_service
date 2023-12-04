@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/NikitaBarysh/discount_service.git/internal/entity"
@@ -29,8 +30,9 @@ func (h *Handler) signUp(c *gin.Context) {
 	}
 
 	token, err := h.services.Authorization.GenerateToken(input)
+	fmt.Println("token: ", token)
 	if err != nil {
-		entity.NewErrorResponse(c, http.StatusNotFound, "can't generate token")
+		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't generate token")
 		return
 	}
 	c.Header("Authorization", "Bearer "+token)
