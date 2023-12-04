@@ -10,7 +10,7 @@ import (
 
 const (
 	authorizationHeader = "Authorization"
-	userCtx             = "user_id"
+	userLogin           = "login"
 )
 
 func (h *Handler) userIdentity(c *gin.Context) {
@@ -43,5 +43,5 @@ func (h *Handler) userIdentity(c *gin.Context) {
 		return
 	}
 
-	c.Set(userCtx, userID)
+	c.Set(userLogin, userID)
 }

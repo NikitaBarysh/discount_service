@@ -9,6 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const userID = "user_id"
+
 func (h *Handler) signUp(c *gin.Context) {
 	var input entity.User
 
@@ -29,12 +31,19 @@ func (h *Handler) signUp(c *gin.Context) {
 		return
 	}
 
+	id, err := h.services.Authorization.GetUserIDByLogin(input.Login)
+	if err != nil {
+		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get user id")
+		return
+	}
+
 	token, errToken := h.services.Authorization.GenerateToken(input)
 	fmt.Println("token err: ", errToken)
 	if errToken != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't generate token")
 		return
 	}
+	c.Set(userID, id)
 	c.Header("Authorization", "Bearer "+token)
 	c.IndentedJSON(http.StatusOK, token)
 }

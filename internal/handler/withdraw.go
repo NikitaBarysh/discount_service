@@ -10,7 +10,7 @@ import (
 )
 
 func (h *Handler) getBalance(c *gin.Context) {
-	userLogin, errGet := c.Get(userCtx)
+	userLogin, errGet := c.Get(userLogin)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userLogin")
 		return
@@ -58,7 +58,7 @@ func (h *Handler) useWithdraw(c *gin.Context) {
 		return
 	}
 
-	userLogin, errGet := c.Get(userCtx)
+	userLogin, errGet := c.Get(userLogin)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userLogin")
 		return
@@ -85,7 +85,7 @@ func (h *Handler) useWithdraw(c *gin.Context) {
 }
 
 func (h *Handler) getWithdraw(c *gin.Context) {
-	userLogin, errGet := c.Get(userCtx)
+	userLogin, errGet := c.Get(userLogin)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userLogin")
 		return

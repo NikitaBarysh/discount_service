@@ -19,7 +19,7 @@ const (
 
 type claims struct {
 	jwt.RegisteredClaims
-	UserID string `json:"login"`
+	Login string `json:"login"`
 }
 
 type AuthService struct {
@@ -54,7 +54,7 @@ func (s *AuthService) GenerateToken(userData entity.User) (string, error) {
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(tokenTTL)),
 		},
-		UserID: userData.Login,
+		Login: userData.Login,
 	})
 
 	return token.SignedString([]byte(signingKey))
@@ -89,7 +89,7 @@ func (s *AuthService) ParseToken(authToken string) (string, error) {
 		return "", errors.New("wrong type of token claims")
 	}
 
-	return claims.UserID, nil
+	return claims.Login, nil
 }
 
 func (s *AuthService) ValidateLogin(user entity.User) error {

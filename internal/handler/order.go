@@ -31,7 +31,7 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
-	userLogin, errGet := c.Get(userCtx)
+	userID, errGet := c.Get(userID)
 	fmt.Println("user login: ", userLogin)
 	fmt.Println("get login err:", err)
 	if !errGet {
@@ -39,14 +39,14 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("cast login to string", userLogin.(string))
-	userID, err := h.services.Authorization.GetUserIDByLogin(userLogin.(string))
-	fmt.Println("handler user id: ", userID)
-	fmt.Println("err ", err)
-	if err != nil {
-		entity.NewErrorResponse(c, http.StatusNotFound, "can't get userID")
-		return
-	}
+	//fmt.Println("cast login to string", userLogin.(string))
+	//userID, err := h.services.Authorization.GetUserIDByLogin(userLogin.(string))
+	//fmt.Println("handler user id: ", userID)
+	//fmt.Println("err ", err)
+	//if err != nil {
+	//	entity.NewErrorResponse(c, http.StatusNotFound, "can't get userID")
+	//	return
+	//}
 
 	errNumber := h.services.Order.CheckNumber(string(body))
 	if errNumber != nil {
@@ -54,14 +54,14 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
-	checkUserOrder := h.services.Order.CheckUserOrder(userID, string(body))
+	checkUserOrder := h.services.Order.CheckUserOrder(userID.(int), string(body))
 	if checkUserOrder != nil {
 		entity.NewErrorResponse(c, http.StatusOK, "order already created")
 		return
 	}
 
 	order := entity.Order{
-		//UserID: userID,
+		UserID: userID.(int),
 		Number: string(body),
 		Status: "NEW",
 	}
@@ -85,7 +85,7 @@ func (h *Handler) setOrder(c *gin.Context) {
 }
 
 func (h *Handler) getOrders(c *gin.Context) {
-	userLogin, errGet := c.Get(userCtx)
+	userLogin, errGet := c.Get(userLogin)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userLogin")
 		return
