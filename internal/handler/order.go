@@ -38,14 +38,18 @@ func (h *Handler) setOrder(c *gin.Context) {
 
 	userLogin, errGet := c.Get(userCtx)
 	if !errGet {
+		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userLogin")
+		return
+	}
+
+	userID, err := h.services.Order.GetUserIDByLogin(userLogin.(string))
+	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
 	}
 
-	userId, err := h.services.Order.GetUserIDByLogin(userLogin.(string))
-
 	order := entity.Order{
-		UserID: userId,
+		UserID: userID,
 		Number: string(body),
 		Status: "NEW",
 	}
@@ -70,13 +74,19 @@ func (h *Handler) setOrder(c *gin.Context) {
 }
 
 func (h *Handler) getOrders(c *gin.Context) {
-	userID, errGet := c.Get(userCtx)
+	userLogin, errGet := c.Get(userCtx)
 	if !errGet {
+		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userLogin")
+		return
+	}
+
+	userID, err := h.services.Order.GetUserIDByLogin(userLogin.(string))
+	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
 	}
 
-	res, err := h.services.Order.GetOrders(userID.(int))
+	res, err := h.services.Order.GetOrders(userID)
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusNoContent, "you don't have orders")
 		return
