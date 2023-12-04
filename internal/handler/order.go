@@ -32,12 +32,16 @@ func (h *Handler) setOrder(c *gin.Context) {
 	}
 
 	userLogin, errGet := c.Get(userCtx)
+	fmt.Println("user login: ", userLogin)
+	fmt.Println("get login err:", err)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userLogin")
 		return
 	}
 
+	fmt.Println("cast login to string", userLogin.(string))
 	userID, err := h.services.Order.GetUserIDByLogin(userLogin.(string))
+	fmt.Println("handler user id: ", userID)
 	fmt.Println("err ", err)
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusNotFound, "can't get userID")

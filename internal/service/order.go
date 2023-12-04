@@ -25,7 +25,10 @@ func (s *OrderService) CreateOrder(order entity.Order) error {
 }
 
 func (s *OrderService) GetUserIDByLogin(login string) (int, error) {
+	fmt.Println("service login: ", login)
 	userID, err := s.rep.GetUserIDByLogin(login)
+	fmt.Println("service userId: ", userID)
+	fmt.Println("service err: ", err)
 	if err != nil {
 		return 0, fmt.Errorf("get ID from DB: %w", err)
 	}
