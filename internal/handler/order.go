@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -56,9 +55,8 @@ func (h *Handler) setOrder(c *gin.Context) {
 	}
 
 	err = h.services.Order.CreateOrder(order)
-	fmt.Println("err create order: ", err)
 	if err != nil {
-		entity.NewErrorResponse(c, http.StatusInternalServerError, "err to create order")
+		entity.NewErrorResponse(c, http.StatusAccepted, "err to create order")
 		return
 	}
 
