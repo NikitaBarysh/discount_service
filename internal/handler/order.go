@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -37,6 +38,7 @@ func (h *Handler) setOrder(c *gin.Context) {
 	}
 
 	userID, err := h.services.Order.GetUserIDByLogin(userLogin.(string))
+	fmt.Println("err ", err)
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusNotFound, "can't get userID")
 		return
