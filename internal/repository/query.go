@@ -1,7 +1,7 @@
 package repository
 
 const (
-	insertUser        = `INSERT INTO users (login, password) VALUES ($1, $2)`
+	insertUser        = `INSERT INTO users (login, password) VALUES ($1, $2) RETURNING id`
 	getUser           = `SELECT id, login, password FROM users WHERE  login=$1 AND password=$2`
 	insertOrder       = `INSERT INTO orders (user_id, number, status, accrual) VALUES ($1, $2, $3, $4)`
 	getOrder          = `SELECT id FROM orders WHERE number=$1`

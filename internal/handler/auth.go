@@ -25,17 +25,17 @@ func (h *Handler) signUp(c *gin.Context) {
 		return
 	}
 
-	err := h.services.Authorization.CreateUser(input)
+	id, err := h.services.Authorization.CreateUser(input)
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "server error, can't do registration")
 		return
 	}
 
-	id, err := h.services.Authorization.GetUserIDByLogin(input.Login)
-	if err != nil {
-		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get user id")
-		return
-	}
+	//id, err := h.services.Authorization.GetUserIDByLogin(input.Login)
+	//if err != nil {
+	//	entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get user id")
+	//	return
+	//}
 
 	token, errToken := h.services.Authorization.GenerateToken(input)
 	fmt.Println("token err: ", errToken)

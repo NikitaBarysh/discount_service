@@ -30,9 +30,14 @@ func NewAuthService(newRep *repository.Repository) *AuthService {
 	return &AuthService{rep: newRep}
 }
 
-func (s *AuthService) CreateUser(user entity.User) error {
+func (s *AuthService) CreateUser(user entity.User) (int, error) {
 	user.Password = generatePasswordHash(user.Password)
-	return s.rep.CreateUser(user)
+	id, err := s.rep.CreateUser(user)
+	if err != nil {
+		return 0, fmt.Errorf("err Create User in DB: %w", err)
+	}
+
+	return id, nil
 }
 
 func (s *AuthService) GetUser(userData entity.User) (entity.User, error) {

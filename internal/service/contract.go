@@ -8,7 +8,7 @@ import (
 //go:generate mockgen -source ${GOFILE} -destination mock.go -package ${GOPACKAGE}
 
 type Authorization interface {
-	CreateUser(user entity.User) error
+	CreateUser(user entity.User) (int, error)
 	GenerateToken(user entity.User) (string, error)
 	ParseToken(token string) (string, error)
 	ValidateLogin(user entity.User) error
