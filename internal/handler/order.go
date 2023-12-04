@@ -32,7 +32,7 @@ func (h *Handler) setOrder(c *gin.Context) {
 
 	userLogin, errGet := c.Get(userCtx)
 	if !errGet {
-		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userLogin")
+		entity.NewErrorResponse(c, http.StatusNotFound, "can't get userLogin")
 		return
 	}
 
@@ -62,7 +62,7 @@ func (h *Handler) setOrder(c *gin.Context) {
 
 	err = h.services.Order.CreateOrder(order)
 	if err != nil {
-		entity.NewErrorResponse(c, http.StatusNotFound, "err to create order")
+		entity.NewErrorResponse(c, http.StatusInternalServerError, "err to create order")
 		return
 	}
 
