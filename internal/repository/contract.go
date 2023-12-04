@@ -6,13 +6,13 @@ import (
 )
 
 type Authorization interface {
-	CreateUser(user entity.User) (int, error)
+	CreateUser(user entity.User) error
 	GetUser(login, password string) (entity.User, error)
 	GetUserIDByLogin(login string) (int, error)
 }
 
 type Order interface {
-	CreateOrder(order entity.Order, login string) error
+	CreateOrder(order entity.Order) error
 	CheckNumber(number string) int
 	GetOrders(userID int) ([]entity.Order, error)
 	GetNewOrder() ([]entity.UpdateStatus, error)

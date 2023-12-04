@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -31,14 +30,6 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
-	login, errGet := c.Get(userLogin)
-	fmt.Println("user id: ", login)
-	fmt.Println("get login err:", errGet)
-	if !errGet {
-		entity.NewErrorResponse(c, http.StatusNotFound, "can't get userLogin")
-		return
-	}
-
 	//fmt.Println("cast login to string", userLogin.(string))
 	//userID, err := h.services.Authorization.GetUserIDByLogin(userLogin.(string))
 	//fmt.Println("handler user id: ", userID)
@@ -54,18 +45,19 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
-	//checkUserOrder := h.services.Order.CheckUserOrder(id.(int), string(body))
-	//if checkUserOrder != nil {
-	//	entity.NewErrorResponse(c, http.StatusOK, "order already created")
-	//	return
-	//}
+	userID, errGet := c.Get(userCtx)
+	if !errGet {
+		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
+		return
+	}
 
 	order := entity.Order{
+		UserID: userID.(int),
 		Number: string(body),
 		Status: "NEW",
 	}
 
-	err = h.services.Order.CreateOrder(order, login.(string))
+	err = h.services.Order.CreateOrder(order)
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "err to create order")
 		return
@@ -84,19 +76,13 @@ func (h *Handler) setOrder(c *gin.Context) {
 }
 
 func (h *Handler) getOrders(c *gin.Context) {
-	userLogin, errGet := c.Get(userLogin)
+	userID, errGet := c.Get(userCtx)
 	if !errGet {
-		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userLogin")
-		return
-	}
-
-	userID, err := h.services.Authorization.GetUserIDByLogin(userLogin.(string))
-	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
 	}
 
-	res, err := h.services.Order.GetOrders(userID)
+	res, err := h.services.Order.GetOrders(userID.(int))
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusNoContent, "you don't have orders")
 		return

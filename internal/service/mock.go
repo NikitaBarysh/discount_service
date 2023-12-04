@@ -49,12 +49,11 @@ func (mr *MockAuthorizationMockRecorder) CheckData(user interface{}) *gomock.Cal
 }
 
 // CreateUser mocks base method.
-func (m *MockAuthorization) CreateUser(user entity.User) (int, error) {
+func (m *MockAuthorization) CreateUser(user entity.User) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", user)
-	ret0, _ := ret[0].(int)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // CreateUser indicates an expected call of CreateUser.
@@ -109,10 +108,10 @@ func (mr *MockAuthorizationMockRecorder) GetUserIDByLogin(login interface{}) *go
 }
 
 // ParseToken mocks base method.
-func (m *MockAuthorization) ParseToken(token string) (string, error) {
+func (m *MockAuthorization) ParseToken(token string) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ParseToken", token)
-	ret0, _ := ret[0].(string)
+	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

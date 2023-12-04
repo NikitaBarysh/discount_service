@@ -19,7 +19,7 @@ const (
 
 type claims struct {
 	jwt.RegisteredClaims
-	Login string `json:"login"`
+	UserID int `json:"id"`
 }
 
 type AuthService struct {
@@ -30,14 +30,9 @@ func NewAuthService(newRep *repository.Repository) *AuthService {
 	return &AuthService{rep: newRep}
 }
 
-func (s *AuthService) CreateUser(user entity.User) (int, error) {
+func (s *AuthService) CreateUser(user entity.User) error {
 	user.Password = generatePasswordHash(user.Password)
-	id, err := s.rep.CreateUser(user)
-	if err != nil {
-		return 0, fmt.Errorf("err Create User in DB: %w", err)
-	}
-
-	return id, nil
+	return s.rep.CreateUser(user)
 }
 
 func (s *AuthService) GetUser(userData entity.User) (entity.User, error) {
@@ -49,17 +44,17 @@ func (s *AuthService) GetUser(userData entity.User) (entity.User, error) {
 }
 
 func (s *AuthService) GenerateToken(userData entity.User) (string, error) {
-	//user, err := s.rep.GetUser(userData.Login, generatePasswordHash(userData.Password))
+	user, err := s.rep.GetUser(userData.Login, generatePasswordHash(userData.Password))
 
-	//if err != nil {
-	//	return "", fmt.Errorf("GetUser: %w", err)
-	//}
+	if err != nil {
+		return "", fmt.Errorf("GetUser: %w", err)
+	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &claims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(tokenTTL)),
 		},
-		Login: userData.Login,
+		UserID: user.ID,
 	})
 
 	return token.SignedString([]byte(signingKey))
@@ -76,7 +71,7 @@ func (s *AuthService) GetUserIDByLogin(login string) (int, error) {
 	return userID, nil
 }
 
-func (s *AuthService) ParseToken(authToken string) (string, error) {
+func (s *AuthService) ParseToken(authToken string) (int, error) {
 	token, err := jwt.ParseWithClaims(authToken, &claims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return 0, errors.New("invalid signing method")
@@ -86,15 +81,15 @@ func (s *AuthService) ParseToken(authToken string) (string, error) {
 	})
 
 	if err != nil {
-		return "", fmt.Errorf("err to parse token: %w", err)
+		return 0, fmt.Errorf("err to parse token: %w", err)
 	}
 
 	claims, ok := token.Claims.(*claims)
 	if !ok {
-		return "", errors.New("wrong type of token claims")
+		return 0, errors.New("wrong type of token claims")
 	}
 
-	return claims.Login, nil
+	return claims.UserID, nil
 }
 
 func (s *AuthService) ValidateLogin(user entity.User) error {

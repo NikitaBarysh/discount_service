@@ -93,7 +93,7 @@ func TestHandler_userIdentity(t *testing.T) {
 
 			r := gin.New()
 			r.GET("/protected", handler.userIdentity, func(c *gin.Context) {
-				id, _ := c.Get(userLogin)
+				id, _ := c.Get(userCtx)
 				c.String(200, fmt.Sprintf("%d", id.(int)))
 			})
 

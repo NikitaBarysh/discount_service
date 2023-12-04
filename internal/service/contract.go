@@ -8,9 +8,9 @@ import (
 //go:generate mockgen -source ${GOFILE} -destination mock.go -package ${GOPACKAGE}
 
 type Authorization interface {
-	CreateUser(user entity.User) (int, error)
+	CreateUser(user entity.User) error
 	GenerateToken(user entity.User) (string, error)
-	ParseToken(token string) (string, error)
+	ParseToken(token string) (int, error)
 	ValidateLogin(user entity.User) error
 	CheckData(user entity.User) error
 	GetUser(userData entity.User) (entity.User, error)
@@ -19,19 +19,15 @@ type Authorization interface {
 
 type Order interface {
 	LuhnAlgorithm(num int) bool
-	CreateOrder(user entity.Order, login string) error
+	CreateOrder(user entity.Order) error
 	CheckNumber(number string) error
 	GetOrders(userID int) ([]entity.Order, error)
-	CheckUserOrder(userID int, number string) error
 }
 
 type Withdraw interface {
 	GetBalance(userID int) (entity.Balance, error)
 	SetWithdraw(withdraw entity.Withdraw, userID int) error
 	GetWithdraw(userID int) ([]entity.Withdraw, error)
-}
-
-type Worker interface {
 }
 
 type Service struct {

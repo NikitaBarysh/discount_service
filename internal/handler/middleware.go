@@ -10,7 +10,7 @@ import (
 
 const (
 	authorizationHeader = "Authorization"
-	userLogin           = "login"
+	userCtx             = "user_id"
 )
 
 func (h *Handler) userIdentity(c *gin.Context) {
@@ -36,18 +36,12 @@ func (h *Handler) userIdentity(c *gin.Context) {
 		return
 	}
 
-	userLog, err := h.services.Authorization.ParseToken(headerParts[1])
+	userId, err := h.services.Authorization.ParseToken(headerParts[1])
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusUnauthorized, "can't parse token")
 		c.Abort()
 		return
 	}
 
-	//id, _ := h.services.Authorization.GetUserIDByLogin(userLog)
-	////if err != nil {
-	////	entity.NewErrorResponse(c, http.StatusInternalServerError, "server error, can't get id")
-	////	return
-	////}
-
-	c.Set(userLogin, userLog)
+	c.Set(userCtx, userId)
 }

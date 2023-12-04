@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/NikitaBarysh/discount_service.git/internal/entity"
@@ -25,27 +24,22 @@ func (h *Handler) signUp(c *gin.Context) {
 		return
 	}
 
-	id, err := h.services.Authorization.CreateUser(input)
-	fmt.Println("auth id:", id)
-	fmt.Println("auth err:", err)
+	err := h.services.Authorization.CreateUser(input)
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "server error, can't do registration")
 		return
 	}
 
-	//id, err := h.services.Authorization.GetUserIDByLogin(input.Login)
-	//if err != nil {
-	//	entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get user id")
-	//	return
-	//}
-
-	token, errToken := h.services.Authorization.GenerateToken(input)
-	fmt.Println("token err: ", errToken)
-	if errToken != nil {
+	token, err := h.services.Authorization.GenerateToken(input)
+	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't generate token")
 		return
 	}
-	c.Set(userID, id)
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "user created",
+		"token":  token,
+	})
 	c.Header("Authorization", "Bearer "+token)
 	c.IndentedJSON(http.StatusOK, token)
 }
