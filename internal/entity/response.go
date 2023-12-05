@@ -17,5 +17,5 @@ type ResponseWithdraw struct {
 
 type ResponseBalance struct {
 	Current  float64 `json:"current"`
-	Withdraw int     `json:"withdraw"`
+	Withdraw float64 `json:"withdraw"`
 }

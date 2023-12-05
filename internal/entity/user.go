@@ -9,5 +9,5 @@ type User struct {
 
 type Balance struct {
 	Money float64 `json:"current" db:"current"`
-	Bonus int     `json:"withdraw" db:"withdraw"`
+	Bonus float64 `json:"withdraw" db:"withdraw"`
 }
