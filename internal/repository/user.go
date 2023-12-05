@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+
 	"github.com/NikitaBarysh/discount_service.git/internal/entity"
 	"github.com/jmoiron/sqlx"
 )

@@ -8,8 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const userID = "user_id"
-
 func (h *Handler) signUp(c *gin.Context) {
 	var input entity.User
 
@@ -37,7 +35,10 @@ func (h *Handler) signUp(c *gin.Context) {
 	}
 
 	c.Header("Authorization", "Bearer "+token)
-	c.IndentedJSON(http.StatusOK, token)
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "user created",
+		"token":  token,
+	})
 }
 
 func (h *Handler) signIn(c *gin.Context) {
@@ -61,5 +62,8 @@ func (h *Handler) signIn(c *gin.Context) {
 	}
 
 	c.Header("Authorization", "Bearer "+token)
-	c.IndentedJSON(http.StatusOK, token)
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "logined",
+		"token":  token,
+	})
 }

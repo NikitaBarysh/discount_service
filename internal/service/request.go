@@ -13,10 +13,6 @@ type OrderRequest struct {
 	AccrualHost string
 }
 
-func NewOrderRequest(endpoint string) *OrderRequest {
-	return &OrderRequest{AccrualHost: endpoint}
-}
-
 type OrderResponse struct {
 	Order   string  `json:"order"`
 	Status  string  `json:"status"`

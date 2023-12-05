@@ -2,6 +2,7 @@ package entity
 
 import (
 	"errors"
+
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
