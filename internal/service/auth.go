@@ -35,10 +35,10 @@ func (s *AuthService) CreateUser(user entity.User) (int, error) {
 	return s.rep.CreateUser(user)
 }
 
-func (s *AuthService) GetUser(userData entity.User) (entity.User, error) {
+func (s *AuthService) GetUser(userData entity.User) (int, error) {
 	user, err := s.rep.GetUser(userData.Login, generatePasswordHash(userData.Password))
 	if err != nil {
-		return entity.User{}, fmt.Errorf("GetUser: %w", err)
+		return 0, fmt.Errorf("GetUser: %w", err)
 	}
 	return user, nil
 }
@@ -100,19 +100,19 @@ func (s *AuthService) ValidateLogin(user entity.User) error {
 		return fmt.Errorf("get user: %w", err)
 	}
 
-	if userFromDB.Login == "" {
+	if userFromDB == 0 {
 		return nil
 	}
 
 	return entity.ErrNotUniqueLogin
 }
 
-func (s *AuthService) CheckData(user entity.User) (entity.User, error) {
+func (s *AuthService) CheckData(user entity.User) (int, error) {
 	res, err := s.rep.GetUser(user.Login, generatePasswordHash(user.Password))
+	fmt.Println("err to get user: ", err)
 	if err != nil {
-		return entity.User{}, fmt.Errorf("get user: %w", err)
+		return 0, fmt.Errorf("get user: %w", err)
 	}
-
 	return res, nil
 }
 

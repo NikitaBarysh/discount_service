@@ -58,25 +58,29 @@ func (r *AuthPostgres) GetUserIDByLogin(login string) (int, error) {
 	return userID, nil
 }
 
-func (r *AuthPostgres) GetUser(login, password string) (entity.User, error) {
-	var user entity.User
+func (r *AuthPostgres) GetUser(login, password string) (int, error) {
+	var id int
 	tx, err := r.db.Begin()
 	if err != nil {
-		return entity.User{}, fmt.Errorf("err to beginTx: %w", err)
+		return 0, fmt.Errorf("err to beginTx: %w", err)
 	}
 
 	row := r.db.QueryRow(getUser, login, password)
 	fmt.Println("db get user: ", row.Err())
-	err = row.Scan(&user.ID, &user.Login, &user.Password)
+	if row.Err() != nil {
+		tx.Rollback()
+		return 0, fmt.Errorf("err to query: %w", row.Err())
+	}
+	err = row.Scan(&id)
 	fmt.Println("db scan: ", err)
 	if err != nil {
 		tx.Rollback()
-		return entity.User{}, fmt.Errorf("err to scan: %w", err)
+		return 0, fmt.Errorf("err to scan: %w", err)
 	}
-	fmt.Println("db user: ", user)
+	fmt.Println("db user id: ", id)
 	//if err != nil {
 	//	return entity.User{}, fmt.Errorf("err to get user form db: %w", err)
 	//}
 
-	return user, tx.Commit()
+	return id, tx.Commit()
 }

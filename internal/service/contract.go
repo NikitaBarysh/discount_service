@@ -12,8 +12,8 @@ type Authorization interface {
 	GenerateToken(userID int) (string, error)
 	ParseToken(token string) (int, error)
 	ValidateLogin(user entity.User) error
-	CheckData(user entity.User) (entity.User, error)
-	GetUser(userData entity.User) (entity.User, error)
+	CheckData(user entity.User) (int, error)
+	GetUser(userData entity.User) (int, error)
 	GetUserIDByLogin(login string) (int, error)
 }
 

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/NikitaBarysh/discount_service.git/internal/entity"
@@ -48,13 +49,14 @@ func (h *Handler) signIn(c *gin.Context) {
 		return
 	}
 
-	user, errData := h.services.Authorization.CheckData(input)
+	id, errData := h.services.Authorization.CheckData(input)
+	fmt.Println("err to check data: ", errData)
 	if errData != nil {
 		entity.NewErrorResponse(c, http.StatusUnauthorized, "invalid login or password")
 		return
 	}
 
-	token, err := h.services.Authorization.GenerateToken(user.ID)
+	token, err := h.services.Authorization.GenerateToken(id)
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't generate token")
 		return
