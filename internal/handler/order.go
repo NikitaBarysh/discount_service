@@ -40,6 +40,7 @@ func (h *Handler) setOrder(c *gin.Context) {
 	errUserNumber := h.services.Order.CheckUserOrder(id.(int), string(body))
 	if errUserNumber != nil {
 		entity.NewErrorResponse(c, http.StatusOK, "order already accepted")
+		return
 	}
 
 	errNumber := h.services.Order.CheckNumber(string(body))
