@@ -47,7 +47,7 @@ func RequestToAccrual(number, accrual string) (OrderResponse, error) {
 	}
 	body, err := io.ReadAll(response.Body)
 	fmt.Println("accrual body err", err)
-	fmt.Println("accrual body ", body)
+	fmt.Println("accrual body ", string(body))
 	if err != nil {
 		return OrderResponse{}, fmt.Errorf("err to read body: %w", err)
 	}
