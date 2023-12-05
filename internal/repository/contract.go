@@ -6,7 +6,7 @@ import (
 )
 
 type Authorization interface {
-	CreateUser(user entity.User) error
+	CreateUser(user entity.User) (int, error)
 	GetUser(login, password string) (entity.User, error)
 	GetUserIDByLogin(login string) (int, error)
 }

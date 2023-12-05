@@ -2,7 +2,6 @@ package repository
 
 import (
 	"fmt"
-
 	"github.com/NikitaBarysh/discount_service.git/internal/entity"
 	"github.com/jmoiron/sqlx"
 )
@@ -15,23 +14,35 @@ func NewAuthPostgres(newDB *sqlx.DB) *AuthPostgres {
 	return &AuthPostgres{db: newDB}
 }
 
-func (r *AuthPostgres) CreateUser(user entity.User) error {
-
+func (r *AuthPostgres) CreateUser(user entity.User) (int, error) {
+	var id int
 	tx, err := r.db.Begin()
 	if err != nil {
-		return fmt.Errorf("err to beginTx: %w", err)
+		return 0, fmt.Errorf("err to beginTx: %w", err)
 	}
 
 	_, err = tx.Exec(insertUser, user.Login, user.Password)
 	if err != nil {
 		err := tx.Rollback()
 		if err != nil {
-			return fmt.Errorf("error to do rollback: %w", err)
+			return 0, fmt.Errorf("error to do rollback: %w", err)
 		}
-		return err
+		return 0, err
 	}
 
-	return tx.Commit()
+	row := tx.QueryRow(getUserIDByLogin, user.Login)
+
+	err = row.Scan(&id)
+	fmt.Println("id: ", id)
+	if err != nil {
+		err := tx.Rollback()
+		if err != nil {
+			return 0, fmt.Errorf("error to do rollback: %w", err)
+		}
+		return 0, fmt.Errorf("err to scan: %w", err)
+	}
+
+	return id, tx.Commit()
 }
 
 func (r *AuthPostgres) GetUserIDByLogin(login string) (int, error) {

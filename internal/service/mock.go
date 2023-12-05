@@ -49,11 +49,12 @@ func (mr *MockAuthorizationMockRecorder) CheckData(user interface{}) *gomock.Cal
 }
 
 // CreateUser mocks base method.
-func (m *MockAuthorization) CreateUser(user entity.User) error {
+func (m *MockAuthorization) CreateUser(user entity.User) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", user)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // CreateUser indicates an expected call of CreateUser.
@@ -63,18 +64,18 @@ func (mr *MockAuthorizationMockRecorder) CreateUser(user interface{}) *gomock.Ca
 }
 
 // GenerateToken mocks base method.
-func (m *MockAuthorization) GenerateToken(user entity.User) (string, error) {
+func (m *MockAuthorization) GenerateToken(userID int) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GenerateToken", user)
+	ret := m.ctrl.Call(m, "GenerateToken", userID)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GenerateToken indicates an expected call of GenerateToken.
-func (mr *MockAuthorizationMockRecorder) GenerateToken(user interface{}) *gomock.Call {
+func (mr *MockAuthorizationMockRecorder) GenerateToken(userID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateToken", reflect.TypeOf((*MockAuthorization)(nil).GenerateToken), user)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateToken", reflect.TypeOf((*MockAuthorization)(nil).GenerateToken), userID)
 }
 
 // GetUser mocks base method.

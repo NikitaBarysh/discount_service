@@ -30,7 +30,7 @@ func NewAuthService(newRep *repository.Repository) *AuthService {
 	return &AuthService{rep: newRep}
 }
 
-func (s *AuthService) CreateUser(user entity.User) error {
+func (s *AuthService) CreateUser(user entity.User) (int, error) {
 	user.Password = generatePasswordHash(user.Password)
 	return s.rep.CreateUser(user)
 }
@@ -43,18 +43,18 @@ func (s *AuthService) GetUser(userData entity.User) (entity.User, error) {
 	return user, nil
 }
 
-func (s *AuthService) GenerateToken(userData entity.User) (string, error) {
-	user, err := s.rep.GetUser(userData.Login, generatePasswordHash(userData.Password))
-
-	if err != nil {
-		return "", fmt.Errorf("GetUser: %w", err)
-	}
+func (s *AuthService) GenerateToken(userID int) (string, error) {
+	//user, err := s.rep.GetUser(userData.Login, generatePasswordHash(userData.Password))
+	//
+	//if err != nil {
+	//	return "", fmt.Errorf("GetUser: %w", err)
+	//}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &claims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(tokenTTL)),
 		},
-		UserID: user.ID,
+		UserID: userID,
 	})
 
 	return token.SignedString([]byte(signingKey))
