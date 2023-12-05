@@ -65,6 +65,15 @@ func checksum(number int) int {
 	return luhn % 10
 }
 
+func (s *OrderService) CheckUserOrder(userID int, number string) error {
+	res := s.rep.CheckUserOrder(userID, number)
+	if res != 0 {
+		return fmt.Errorf("order already created")
+	}
+
+	return nil
+}
+
 //func (s *OrderService) CreateOrder(order entity.Order) error {
 //	err := s.rep.CreateOrder(order)
 //	fmt.Println("create order: ", err)

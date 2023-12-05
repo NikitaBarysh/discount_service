@@ -40,17 +40,22 @@ func (h *Handler) setOrder(c *gin.Context) {
 	//	return
 	//}
 
-	errNumber := h.services.Order.CheckNumber(string(body))
-	if errNumber != nil {
-		entity.NewErrorResponse(c, http.StatusConflict, "number already exist")
-		return
-	}
-
 	id, errGet := c.Get(userCtx)
 	fmt.Println("id :", id)
 	fmt.Println("err get: ", errGet)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
+		return
+	}
+
+	errUserNumber := h.services.Order.CheckUserOrder(id.(int), string(body))
+	if errUserNumber != nil {
+		entity.NewErrorResponse(c, http.StatusOK, "order already accepted")
+	}
+
+	errNumber := h.services.Order.CheckNumber(string(body))
+	if errNumber != nil {
+		entity.NewErrorResponse(c, http.StatusConflict, "number already exist")
 		return
 	}
 
