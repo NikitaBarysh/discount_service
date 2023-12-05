@@ -14,4 +14,6 @@ const (
 	updateOrderStatus = `UPDATE orders SET status=$1, accrual=$2 WHERE number=$3`
 	getUserIDByLogin  = `SELECT id FROM users WHERE login=$1`
 	getUserOrder      = `SELECT id FROM orders WHERE user_id=$1 AND number=$2`
+	getWithdraw       = `SELECT (users.current >= $1) FROM users WHERE id=$2 FOR UPDATE `
+	updateBalance     = `UPDATE users SET current = users.current - $1, withdraw = withdraw + $1 WHERE id = $2`
 )

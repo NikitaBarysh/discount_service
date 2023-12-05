@@ -37,7 +37,6 @@ func (r *WithdrawRepository) SetWithdraw(withdraw entity.Withdraw, userID int) e
 
 	var enough bool
 
-	getWithdraw := `SELECT (users.current >= $1) FROM users WHERE id=$2 FOR UPDATE `
 	row := tx.QueryRow(getWithdraw, withdraw.Sum, userID)
 
 	if row.Err() != nil {
@@ -55,7 +54,6 @@ func (r *WithdrawRepository) SetWithdraw(withdraw entity.Withdraw, userID int) e
 		return entity.ErrNotEnoughMoney
 	}
 
-	updateBalance := `UPDATE users SET current = users.current - $1, withdraw = withdraw + $1 WHERE id = $2`
 	_, err = tx.Exec(updateBalance, withdraw.Sum, userID)
 
 	if err != nil {

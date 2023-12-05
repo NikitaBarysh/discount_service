@@ -21,9 +21,6 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	//termSig := make(chan os.Signal, 1)
-	//signal.Notify(termSig, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
-
 	m, err := repository.RunMigration(cfg.DataBase)
 	if err != nil && !m {
 		log.Fatal(err)
@@ -51,6 +48,4 @@ func main() {
 	}
 	logrus.Info("server started with port: ", cfg.Endpoint)
 
-	//sig := <-termSig
-	//logrus.Info(" Graceful Shutdown: ", sig.String())
 }
