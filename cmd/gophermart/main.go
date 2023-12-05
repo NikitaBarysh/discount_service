@@ -3,9 +3,6 @@ package main
 import (
 	"context"
 	"log"
-	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/NikitaBarysh/discount_service.git/configs"
 	"github.com/NikitaBarysh/discount_service.git/internal/app"
@@ -24,8 +21,8 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	termSig := make(chan os.Signal, 1)
-	signal.Notify(termSig, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
+	//termSig := make(chan os.Signal, 1)
+	//signal.Notify(termSig, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
 
 	m, err := repository.RunMigration(cfg.DataBase)
 	if err != nil && !m {
@@ -54,6 +51,6 @@ func main() {
 	}
 	logrus.Info("server started with port: ", cfg.Endpoint)
 
-	sig := <-termSig
-	logrus.Info(" Graceful Shutdown: ", sig.String())
+	//sig := <-termSig
+	//logrus.Info(" Graceful Shutdown: ", sig.String())
 }
