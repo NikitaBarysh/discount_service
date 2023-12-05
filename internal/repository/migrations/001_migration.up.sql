@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS orders(
     accrual FLOAT DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS withdrawals(
+CREATE TABLE IF NOT EXISTS withdraws(
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id),
     number VARCHAR(50) NOT NULL UNIQUE,
