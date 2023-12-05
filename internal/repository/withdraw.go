@@ -18,18 +18,12 @@ func NewWithdrawRepository(newDB *sqlx.DB) *WithdrawRepository {
 
 func (r *WithdrawRepository) GetUserBalance(userID int) (entity.Balance, error) {
 	var balance entity.Balance
-	fmt.Println("balance before: ", balance)
-	//err := r.db.Get(&balance, getBalance, userID)
+
 	row := r.db.QueryRow(getBalance, userID)
 	err := row.Scan(&balance.Money, &balance.Bonus)
 	if err != nil {
 		return balance, err
 	}
-	fmt.Println("get balance err: ", err)
-	fmt.Println("balance after: ", balance)
-	//if err != nil {
-	//	return entity.Balance{}, fmt.Errorf("err to get balance: %w", err)
-	//}
 
 	return balance, nil
 }
@@ -43,33 +37,30 @@ func (r *WithdrawRepository) SetWithdraw(withdraw entity.Withdraw, userID int) e
 
 	var enough bool
 
-	getWithdraw := `SELECT (users.current >= $1) FROM users WHERE id=$2 FOR UPDATE `
 	row := tx.QueryRow(getWithdraw, withdraw.Sum, userID)
-	fmt.Println("get withdraw row.err: ", row.Err())
+
 	if row.Err() != nil {
 		return fmt.Errorf("err to do query: %w", row.Err())
 	}
 
 	err = row.Scan(&enough)
-	fmt.Println("get withdraw scan: ", err)
+
 	if err != nil {
 		return fmt.Errorf("err to do Scan: %w", err)
 	}
 
 	if !enough {
-		fmt.Println("get withdraw enough: ", enough)
 		return entity.ErrNotEnoughMoney
 	}
 
-	updateBalance := `UPDATE users SET current = users.current - $1, withdraw = withdraw + $1 WHERE id = $2`
 	_, err = tx.Exec(updateBalance, withdraw.Sum, userID)
-	fmt.Println("update balance err: ", err)
+
 	if err != nil {
 		return fmt.Errorf("err to update balance: %w", err)
 	}
 
 	_, err = tx.Exec(insertWithdraw, withdraw.Number, userID, withdraw.Sum, "PROCESSED", time.Now())
-	fmt.Println("insert withdraw  err: ", err)
+
 	if err != nil {
 		return fmt.Errorf("err to insert Withdraw: %w", err)
 	}
@@ -81,7 +72,6 @@ func (r *WithdrawRepository) GetWithdraw(userID int) ([]entity.Withdraw, error) 
 	allWithdraw := make([]entity.Withdraw, 0)
 
 	err := r.db.Select(&allWithdraw, getAllWithdraw, userID)
-	fmt.Println("get withdraw err: ", err)
 
 	if err != nil {
 		return nil, fmt.Errorf("err to get Withdraw: %w", err)

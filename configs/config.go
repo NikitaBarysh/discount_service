@@ -2,7 +2,6 @@ package configs
 
 import (
 	"flag"
-	"fmt"
 	"os"
 )
 
@@ -70,50 +69,6 @@ func NewServer() *Config {
 	}
 
 	cfg := NewConfig(WithEndpoint(endpoint), WithDataBase(database), WithAccrual(accrual))
-	fmt.Println("cfg: ", cfg)
+
 	return cfg
 }
-
-//
-//type Config struct {
-//	RunAddr           string
-//	AccrualSystemAddr string
-//	DatabaseDSN       string
-//}
-
-//func newConfig(option options) *Config {
-//	cfg := &Config{
-//
-//		RunAddr:           option.url,
-//		DatabaseDSN:       option.dataBaseDSN,
-//		AccrualSystemAddr: option.accrual,
-//	}
-//
-//	return cfg
-//}
-//
-//type options struct {
-//	url         string
-//	dataBaseDSN string
-//	accrual     string
-//}
-
-//func ParseServerConfig() *Config {
-//	cfg := &Config{}
-//
-//	if cfg.RunAddr = os.Getenv("RUN_ADDRESS"); cfg.RunAddr == "" {
-//		flag.StringVar(&cfg.RunAddr, "a", ":8000", "Server address")
-//	}
-//
-//	if cfg.DatabaseDSN = os.Getenv("DATABASE_URI"); cfg.DatabaseDSN == "" {
-//		flag.StringVar(&cfg.DatabaseDSN, "d", "postgres://postgres:qwerty@localhost:5434/postgres?sslmode=disable", "")
-//	}
-//
-//	if cfg.AccrualSystemAddr = os.Getenv("ACCRUAL_SYSTEM_ADDRESS"); cfg.AccrualSystemAddr == "" {
-//		flag.StringVar(&cfg.AccrualSystemAddr, "r", "http://localhost:8080", "Accural system address")
-//	}
-//
-//	flag.Parse()
-//
-//	return cfg
-//}

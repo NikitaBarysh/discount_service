@@ -31,7 +31,6 @@ func (h *Handler) setOrder(c *gin.Context) {
 	}
 
 	id, errGet := c.Get(userCtx)
-
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return

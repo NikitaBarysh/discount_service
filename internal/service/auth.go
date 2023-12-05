@@ -44,12 +44,6 @@ func (s *AuthService) GetUser(userData entity.User) (int, error) {
 }
 
 func (s *AuthService) GenerateToken(userID int) (string, error) {
-	//user, err := s.rep.GetUser(userData.Login, generatePasswordHash(userData.Password))
-	//
-	//if err != nil {
-	//	return "", fmt.Errorf("GetUser: %w", err)
-	//}
-
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &claims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(tokenTTL)),

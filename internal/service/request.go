@@ -25,7 +25,7 @@ type OrderResponse struct {
 
 func RequestToAccrual(number, accrual string) (OrderResponse, error) {
 	url := fmt.Sprintf("%s/api/orders/%s", accrual, number)
-	fmt.Println("accrual url: ", url)
+
 	response, err := http.Get(url)
 	if err != nil {
 		return OrderResponse{}, fmt.Errorf("err to get reposnse from Accrual: %w", err)
@@ -46,8 +46,7 @@ func RequestToAccrual(number, accrual string) (OrderResponse, error) {
 		return OrderResponse{}, entity.ErrTooManyRequest
 	}
 	body, err := io.ReadAll(response.Body)
-	fmt.Println("accrual body err", err)
-	fmt.Println("accrual body ", string(body))
+
 	if err != nil {
 		return OrderResponse{}, fmt.Errorf("err to read body: %w", err)
 	}

@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+
 	"github.com/NikitaBarysh/discount_service.git/internal/entity"
 	"github.com/NikitaBarysh/discount_service.git/internal/repository"
 )

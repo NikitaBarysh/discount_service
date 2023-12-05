@@ -36,8 +36,8 @@ func TestHandler_signUp(t *testing.T) {
 			token: "token",
 			mockBehaviour: func(s *service.MockAuthorization, user entity.User, token string) {
 				s.EXPECT().ValidateLogin(user).Return(nil)
-				s.EXPECT().CreateUser(user).Return(nil)
-				s.EXPECT().GenerateToken(user).Return(tokenAnswer, nil)
+				s.EXPECT().CreateUser(user).Return(1, nil)
+				s.EXPECT().GenerateToken(1).Return(tokenAnswer, nil)
 			},
 			expectedStatusCode:  200,
 			expectedRequestBody: `{"status":"user created","token":"test"}`,
@@ -58,10 +58,10 @@ func TestHandler_signUp(t *testing.T) {
 			},
 			mockBehaviour: func(s *service.MockAuthorization, user entity.User, token string) {
 				s.EXPECT().ValidateLogin(user).Return(nil)
-				s.EXPECT().CreateUser(user).Return(errors.New("service error"))
+				s.EXPECT().CreateUser(user).Return(0, errors.New("service error"))
 			},
 			expectedStatusCode:  500,
-			expectedRequestBody: `{"message":"server error, can't do registration"}`,
+			expectedRequestBody: `{"message":"server error, error to do registration"}`,
 		},
 		{
 			name:      "Login is exist",
@@ -86,11 +86,11 @@ func TestHandler_signUp(t *testing.T) {
 			token: "token",
 			mockBehaviour: func(s *service.MockAuthorization, user entity.User, token string) {
 				s.EXPECT().ValidateLogin(user).Return(nil)
-				s.EXPECT().CreateUser(user).Return(nil)
-				s.EXPECT().GenerateToken(user).Return("", entity.ErrToGenerateToken)
+				s.EXPECT().CreateUser(user).Return(1, nil)
+				s.EXPECT().GenerateToken(1).Return("", entity.ErrToGenerateToken)
 			},
 			expectedStatusCode:  500,
-			expectedRequestBody: `{"message":"can't generate token"}`,
+			expectedRequestBody: `{"message":"error to generate token"}`,
 		},
 	}
 
@@ -142,8 +142,8 @@ func TestHandler_signIn(t *testing.T) {
 			},
 			token: "token",
 			mockBehaviour: func(s *service.MockAuthorization, user entity.User, token string) {
-				s.EXPECT().CheckData(user).Return(nil)
-				s.EXPECT().GenerateToken(user).Return(tokenAnswer, nil)
+				s.EXPECT().CheckData(user).Return(1, nil)
+				s.EXPECT().GenerateToken(1).Return(tokenAnswer, nil)
 			},
 			expectedStatusCode:   200,
 			expectedResponseBody: `{"status":"logined","token":"tokenAnswer"}`,
@@ -163,7 +163,7 @@ func TestHandler_signIn(t *testing.T) {
 				Password: "qwerty",
 			},
 			mockBehaviour: func(s *service.MockAuthorization, user entity.User, token string) {
-				s.EXPECT().CheckData(user).Return(entity.ErrInvalidLoginPassword)
+				s.EXPECT().CheckData(user).Return(0, entity.ErrInvalidLoginPassword)
 			},
 			expectedStatusCode:   401,
 			expectedResponseBody: `{"message":"invalid login or password"}`,
@@ -177,8 +177,8 @@ func TestHandler_signIn(t *testing.T) {
 			},
 			token: "token",
 			mockBehaviour: func(s *service.MockAuthorization, user entity.User, token string) {
-				s.EXPECT().CheckData(user).Return(nil)
-				s.EXPECT().GenerateToken(user).Return("", entity.ErrToGenerateToken)
+				s.EXPECT().CheckData(user).Return(1, nil)
+				s.EXPECT().GenerateToken(1).Return("", entity.ErrToGenerateToken)
 			},
 			expectedStatusCode:   500,
 			expectedResponseBody: `{"message":"can't generate token"}`,
