@@ -16,13 +16,20 @@ func NewOrderRepository(newDB *sqlx.DB) *OrderRepository {
 }
 
 func (r *OrderRepository) CreateOrder(order entity.Order) error {
-	_, errInsert := r.db.Exec(insertOrder, order.UserID, order.Number, order.Status, order.Accrual)
+	tx, err := r.db.Begin()
+
+	if err != nil {
+		return fmt.Errorf("err to begin TX: %w", err)
+	}
+
+	_, errInsert := tx.Exec(insertOrder, order.UserID, order.Number, order.Status, order.Accrual)
 	fmt.Println("db errInsert: ", errInsert)
 	if errInsert != nil {
+		tx.Rollback()
 		return fmt.Errorf("err to do insert into order db")
 	}
 
-	return nil
+	return tx.Commit()
 }
 
 func (r *OrderRepository) GetOrders(userID int) ([]entity.Order, error) {
