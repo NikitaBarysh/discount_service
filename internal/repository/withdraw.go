@@ -16,7 +16,7 @@ func NewWithdrawRepository(newDB *sqlx.DB) *WithdrawRepository {
 	return &WithdrawRepository{db: newDB}
 }
 
-func (r *WithdrawRepository) GetBalance(userID int) (entity.Balance, error) {
+func (r *WithdrawRepository) GetUserBalance(userID int) (entity.Balance, error) {
 	var balance entity.Balance
 	fmt.Println("balance before: ", balance)
 	//err := r.db.Get(&balance, getBalance, userID)
@@ -27,9 +27,9 @@ func (r *WithdrawRepository) GetBalance(userID int) (entity.Balance, error) {
 	}
 	fmt.Println("get balance err: ", err)
 	fmt.Println("balance after: ", balance)
-	if err != nil {
-		return entity.Balance{}, fmt.Errorf("err to get balance: %w", err)
-	}
+	//if err != nil {
+	//	return entity.Balance{}, fmt.Errorf("err to get balance: %w", err)
+	//}
 
 	return balance, nil
 }

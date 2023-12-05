@@ -21,7 +21,7 @@ type Order interface {
 }
 
 type Withdraw interface {
-	GetBalance(userID int) (entity.Balance, error)
+	GetUserBalance(userID int) (entity.Balance, error)
 	SetWithdraw(withdraw entity.Withdraw, userID int) error
 	GetWithdraw(userID int) ([]entity.Withdraw, error)
 }

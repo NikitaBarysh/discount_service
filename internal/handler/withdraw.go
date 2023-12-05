@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -21,13 +22,14 @@ func (h *Handler) getBalance(c *gin.Context) {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "err to get balance")
 		return
 	}
+	fmt.Println(balance)
 
-	//responseBalance := entity.ResponseBalance{
-	//	Current:  balance.Money,
-	//	Withdraw: balance.Bonus,
-	//}
+	responseBalance := entity.ResponseBalance{
+		Current:  balance.Bonus,
+		Withdraw: balance.Money,
+	}
 
-	c.JSON(http.StatusOK, balance)
+	c.JSON(http.StatusOK, responseBalance)
 }
 
 func (h *Handler) useWithdraw(c *gin.Context) {

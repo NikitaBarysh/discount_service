@@ -175,6 +175,20 @@ func (mr *MockOrderMockRecorder) CheckNumber(number interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckNumber", reflect.TypeOf((*MockOrder)(nil).CheckNumber), number)
 }
 
+// CheckUserOrder mocks base method.
+func (m *MockOrder) CheckUserOrder(userID int, number string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CheckUserOrder", userID, number)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CheckUserOrder indicates an expected call of CheckUserOrder.
+func (mr *MockOrderMockRecorder) CheckUserOrder(userID, number interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckUserOrder", reflect.TypeOf((*MockOrder)(nil).CheckUserOrder), userID, number)
+}
+
 // CreateOrder mocks base method.
 func (m *MockOrder) CreateOrder(user entity.Order) error {
 	m.ctrl.T.Helper()

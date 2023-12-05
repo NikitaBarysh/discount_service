@@ -17,7 +17,8 @@ func NewWithdrawService(newRep *repository.Repository) *WithdrawService {
 }
 
 func (s *WithdrawService) GetBalance(userID int) (entity.Balance, error) {
-	balance, err := s.rep.GetBalance(userID)
+	balance, err := s.rep.GetUserBalance(userID)
+	fmt.Println(balance)
 	if err != nil {
 		return entity.Balance{}, fmt.Errorf("err to GetBalnca from DB: %w", err)
 	}
