@@ -22,14 +22,14 @@ func (h *Handler) getBalance(c *gin.Context) {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "err to get balance")
 		return
 	}
-	fmt.Println(balance)
+	fmt.Println("body: ", balance, balance.Money, balance.Bonus)
 
-	responseBalance := entity.ResponseBalance{
-		Current:  balance.Bonus,
-		Withdraw: balance.Money,
-	}
+	//balancebalanceresponseBalance := entity.ResponseBalance{
+	//	Current:  balance.Bonus,
+	//	Withdraw: balance.Money,
+	//}
 
-	c.JSON(http.StatusOK, responseBalance)
+	c.JSON(http.StatusOK, balance)
 }
 
 func (h *Handler) useWithdraw(c *gin.Context) {
