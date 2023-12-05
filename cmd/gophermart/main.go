@@ -14,17 +14,17 @@ import (
 
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
-	cfg := configs.ParseServerConfig()
+	cfg := configs.NewServer()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	m, err := repository.RunMigration(cfg.DatabaseDSN)
+	m, err := repository.RunMigration(cfg.DataBase)
 	if err != nil && !m {
 		log.Fatal(err)
 	}
 
-	db, err := repository.NewPostgresDB(ctx, cfg.DatabaseDSN)
+	db, err := repository.NewPostgresDB(ctx, cfg.DataBase)
 	if err != nil {
 
 		logrus.Error("main: NewPostgresDB: %w", err)
@@ -33,14 +33,14 @@ func main() {
 	newService := service.NewService(storage)
 	handlers := handler.NewHandler(newService)
 
-	work := service.NewWorkerPool(ctx, 6, storage.Order, cfg.AccrualSystemAddr)
+	work := service.NewWorkerPool(ctx, 6, storage.Order, cfg.Accrual)
 
 	go func() {
 		work.Run(ctx)
 	}()
 
 	srv := new(app.Server)
-	if err := srv.Run(cfg.RunAddr, handlers.InitRouters()); err != nil {
+	if err := srv.Run(cfg.Endpoint, handlers.InitRouters()); err != nil {
 
 		logrus.Error("err while running server: %w", err)
 	}
