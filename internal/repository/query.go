@@ -10,7 +10,7 @@ const (
 	insertWithdraw    = `INSERT INTO withdraws (number, user_id, sum, status, uploaded_at) VALUES ($1, $2, $3, $4, $5)`
 	getAllWithdraw    = `SELECT number, sum, uploaded_at FROM withdraws WHERE user_id=$1`
 	getNewOrder       = `SELECT number, user_id FROM orders WHERE status='NEW'`
-	updateUserBalance = `UPDATE  users SET current= current + $1 WHERE id=$2`
+	updateUserBalance = `UPDATE  users SET current=current + $1 WHERE id=$2`
 	updateOrderStatus = `UPDATE orders SET status=$1 WHERE number=$2`
 	getUserIDByLogin  = `SELECT id FROM users WHERE login=$1`
 	getUserOrder      = `SELECT id FROM orders WHERE user_id=$1 AND number=$2`
