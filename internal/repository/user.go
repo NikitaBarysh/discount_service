@@ -60,11 +60,17 @@ func (r *AuthPostgres) GetUserIDByLogin(login string) (int, error) {
 
 func (r *AuthPostgres) GetUser(login, password string) (entity.User, error) {
 	var user entity.User
+	tx, err := r.db.Begin()
+	if err != nil {
+		return entity.User{}, fmt.Errorf("err to beginTx: %w", err)
+	}
+
 	row := r.db.QueryRow(getUser, login, password)
 	fmt.Println("db get user: ", row.Err())
-	err := row.Scan(&user.ID, &user.Login, &user.Password)
+	err = row.Scan(&user.ID, &user.Login, &user.Password)
 	fmt.Println("db scan: ", err)
 	if err != nil {
+		tx.Rollback()
 		return entity.User{}, fmt.Errorf("err to scan: %w", err)
 	}
 	fmt.Println("db user: ", user)
@@ -72,5 +78,5 @@ func (r *AuthPostgres) GetUser(login, password string) (entity.User, error) {
 	//	return entity.User{}, fmt.Errorf("err to get user form db: %w", err)
 	//}
 
-	return user, nil
+	return user, tx.Commit()
 }

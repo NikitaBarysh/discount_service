@@ -56,7 +56,7 @@ func (s *AuthService) GenerateToken(userID int) (string, error) {
 		},
 		UserID: userID,
 	})
-
+	fmt.Println("generate token user id: ", userID)
 	return token.SignedString([]byte(signingKey))
 }
 
@@ -77,12 +77,16 @@ func (s *AuthService) ParseToken(authToken string) (int, error) {
 
 		return []byte(signingKey), nil
 	})
+	fmt.Println("token: ", token)
+	fmt.Println("token err: ", err)
 
 	if err != nil {
 		return 0, fmt.Errorf("err to parse token: %w", err)
 	}
 
 	claims, ok := token.Claims.(*claims)
+	fmt.Println("claims: ", claims)
+	fmt.Println("claims ok: ", ok)
 	if !ok {
 		return 0, errors.New("wrong type of token claims")
 	}
@@ -103,13 +107,13 @@ func (s *AuthService) ValidateLogin(user entity.User) error {
 	return entity.ErrNotUniqueLogin
 }
 
-func (s *AuthService) CheckData(user entity.User) error {
-	_, err := s.rep.GetUser(user.Login, generatePasswordHash(user.Password))
+func (s *AuthService) CheckData(user entity.User) (entity.User, error) {
+	res, err := s.rep.GetUser(user.Login, generatePasswordHash(user.Password))
 	if err != nil {
-		return fmt.Errorf("get user: %w", err)
+		return entity.User{}, fmt.Errorf("get user: %w", err)
 	}
 
-	return nil
+	return res, nil
 }
 
 func generatePasswordHash(password string) string {

@@ -48,13 +48,13 @@ func (h *Handler) signIn(c *gin.Context) {
 		return
 	}
 
-	errData := h.services.Authorization.CheckData(input)
+	user, errData := h.services.Authorization.CheckData(input)
 	if errData != nil {
 		entity.NewErrorResponse(c, http.StatusUnauthorized, "invalid login or password")
 		return
 	}
 
-	token, err := h.services.Authorization.GenerateToken(input.ID)
+	token, err := h.services.Authorization.GenerateToken(user.ID)
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't generate token")
 		return
