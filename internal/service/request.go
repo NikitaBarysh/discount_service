@@ -46,6 +46,8 @@ func RequestToAccrual(number, accrual string) (OrderResponse, error) {
 		return OrderResponse{}, entity.ErrTooManyRequest
 	}
 	body, err := io.ReadAll(response.Body)
+	fmt.Println("accrual body err", err)
+	fmt.Println("accrual body ", body)
 	if err != nil {
 		return OrderResponse{}, fmt.Errorf("err to read body: %w", err)
 	}
