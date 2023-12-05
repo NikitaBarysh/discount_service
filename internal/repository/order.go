@@ -17,7 +17,7 @@ func NewOrderRepository(newDB *sqlx.DB) *OrderRepository {
 
 func (r *OrderRepository) CreateOrder(order entity.Order) error {
 	_, errInsert := r.db.Exec(insertOrder, order.UserID, order.Number, order.Status, order.Accrual)
-
+	fmt.Println("db errInsert: ", errInsert)
 	if errInsert != nil {
 		return fmt.Errorf("err to do insert into order db")
 	}
