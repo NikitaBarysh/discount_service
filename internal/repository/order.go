@@ -75,6 +75,7 @@ func (r *OrderRepository) UpdateStatus(response entity.UpdateStatus) error {
 		return fmt.Errorf("err to begin TX: %w", err)
 	}
 
+	fmt.Println("db update data: ", response)
 	_, err = tx.Exec(updateUserBalance, response.Accrual, response.UserID)
 	fmt.Println("err update status accrual user: ", err)
 	if err != nil {
