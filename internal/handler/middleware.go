@@ -39,7 +39,7 @@ func (h *Handler) userIdentity(c *gin.Context) {
 	userID, err := h.services.Authorization.ParseToken(headerParts[1])
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusUnauthorized, "can't parse token")
-		c.Abort()
+		//c.Abort()
 		return
 	}
 
