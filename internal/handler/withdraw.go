@@ -22,12 +22,12 @@ func (h *Handler) getBalance(c *gin.Context) {
 		return
 	}
 
-	responseBalance := entity.ResponseBalance{
-		Current:  balance.Money,
-		Withdraw: balance.Bonus,
-	}
+	//responseBalance := entity.ResponseBalance{
+	//	Current:  balance.Money,
+	//	Withdraw: balance.Bonus,
+	//}
 
-	c.JSON(http.StatusOK, responseBalance)
+	c.JSON(http.StatusOK, balance)
 }
 
 func (h *Handler) useWithdraw(c *gin.Context) {
