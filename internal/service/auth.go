@@ -61,10 +61,8 @@ func (s *AuthService) GenerateToken(userID int) (string, error) {
 }
 
 func (s *AuthService) GetUserIDByLogin(login string) (int, error) {
-	fmt.Println("service login: ", login)
 	userID, err := s.rep.GetUserIDByLogin(login)
-	fmt.Println("service userId: ", userID)
-	fmt.Println("service err: ", err)
+
 	if err != nil {
 		return 0, fmt.Errorf("get ID from DB: %w", err)
 	}
@@ -74,20 +72,17 @@ func (s *AuthService) GetUserIDByLogin(login string) (int, error) {
 func (s *AuthService) ParseToken(authToken string) (int, error) {
 	token, err := jwt.ParseWithClaims(authToken, &claims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			fmt.Println("err 0", ok)
 			return 0, errors.New("invalid signing method")
 		}
 
 		return []byte(signingKey), nil
 	})
-	fmt.Println("err 1", err)
 
 	if err != nil {
 		return 0, fmt.Errorf("err to parse token: %w", err)
 	}
 
 	claims, ok := token.Claims.(*claims)
-	fmt.Println("err 2", ok)
 	if !ok {
 		return 0, errors.New("wrong type of token claims")
 	}

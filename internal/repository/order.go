@@ -21,7 +21,8 @@ func (r *OrderRepository) CreateOrder(order entity.Order) error {
 	if err != nil {
 		return fmt.Errorf("err to begin TX: %w", err)
 	}
-
+	fmt.Println("create order: ", order)
+	fmt.Println("query: ", insertOrder)
 	_, errInsert := tx.Exec(insertOrder, order.UserID, order.Number, order.Status, order.Accrual)
 	fmt.Println("db errInsert: ", errInsert)
 	if errInsert != nil {
