@@ -83,6 +83,12 @@ func (r *OrderRepository) UpdateStatus(response entity.UpdateStatus) error {
 		return fmt.Errorf("err to update user balance: %w", err)
 	}
 
+	var user entity.User
+	res := tx.QueryRow(`SELECT * FROM users`)
+	fmt.Println("res query: ", res)
+	res.Scan(&user)
+	fmt.Println("updated user: ", user)
+
 	_, err = tx.Exec(updateOrderStatus, response.Status, response.Order)
 	fmt.Println("err update status order: ", err)
 	if err != nil {
