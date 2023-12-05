@@ -8,7 +8,7 @@ import (
 )
 
 func RunMigration(databaseDSN string) (bool, error) {
-	m, err := migrate.New("file://migration", databaseDSN)
+	m, err := migrate.New("file://internal/repository/migrations", databaseDSN)
 	if err != nil {
 		if !errors.Is(err, migrate.ErrNoChange) {
 			return false, err
