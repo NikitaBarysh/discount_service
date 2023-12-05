@@ -86,7 +86,7 @@ func (s *AuthService) ParseToken(authToken string) (int, error) {
 	if !ok {
 		return 0, errors.New("wrong type of token claims")
 	}
-
+	fmt.Println("claims user id", claims.UserID)
 	return claims.UserID, nil
 }
 

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -45,14 +46,16 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
-	userID, errGet := c.Get(userCtx)
+	id, errGet := c.Get(userCtx)
+	fmt.Println("id :", id)
+	fmt.Println("err get: ", errGet)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
 	}
 
 	order := entity.Order{
-		UserID: userID.(int),
+		UserID: id.(int),
 		Number: string(body),
 		Status: "NEW",
 	}
