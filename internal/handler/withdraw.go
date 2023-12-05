@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -22,7 +21,6 @@ func (h *Handler) getBalance(c *gin.Context) {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "err to get balance")
 		return
 	}
-	fmt.Println("body: ", balance, balance.Money, balance.Bonus)
 
 	responseBalance := entity.ResponseBalance{
 		Current:  balance.Money,

@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/NikitaBarysh/discount_service.git/internal/entity"
-	"github.com/NikitaBarysh/discount_service.git/internal/repository"
 	"sync"
 	"time"
+
+	"github.com/NikitaBarysh/discount_service.git/internal/entity"
+	"github.com/NikitaBarysh/discount_service.git/internal/repository"
 )
 
 type WorkerPool struct {
@@ -43,7 +44,6 @@ func (s *WorkerPool) Run(ctx context.Context) {
 				select {
 				case update := <-s.inputCH:
 					err := s.storage.UpdateStatus(update)
-					fmt.Println("run update err: ", err)
 					if err != nil {
 						fmt.Println("err to do request into Accrual: ", err)
 					}
@@ -95,8 +95,7 @@ func (s *WorkerPool) GetRequest() error {
 
 	for _, v := range numbers {
 		res, err := RequestToAccrual(v.Order, s.Accrual)
-		fmt.Println("get req res:", res)
-		fmt.Println("get req err:", err)
+
 		if err != nil {
 			if errors.Is(err, entity.ErrTooManyRequest) {
 				return err

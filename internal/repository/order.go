@@ -75,22 +75,16 @@ func (r *OrderRepository) UpdateStatus(response entity.UpdateStatus) error {
 		return fmt.Errorf("err to begin TX: %w", err)
 	}
 
-	fmt.Println("db update data: ", response)
 	_, err = tx.Exec(updateUserBalance, response.Accrual, response.UserID)
-	fmt.Println("err update status accrual user: ", err)
+
 	if err != nil {
 		tx.Rollback()
 		return fmt.Errorf("err to update user balance: %w", err)
 	}
 
-	var user entity.User
-	res := tx.QueryRow(`SELECT * FROM users`)
-	fmt.Println("res query: ", res)
-	res.Scan(&user)
-	fmt.Println("updated user: ", user)
 	accrual := response.Accrual
 	_, err = tx.Exec(updateOrderStatus, response.Status, accrual, response.Order)
-	fmt.Println("err update status order: ", err)
+
 	if err != nil {
 		tx.Rollback()
 		return fmt.Errorf("err to update order stattus")
