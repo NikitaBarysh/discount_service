@@ -108,7 +108,7 @@ func ParseServerConfig() *Config {
 	}
 
 	if cfg.AccrualSystemAddr = os.Getenv("ACCRUAL_SYSTEM_ADDRESS"); cfg.AccrualSystemAddr == "" {
-		flag.StringVar(&cfg.AccrualSystemAddr, "r", "", "Accural system address")
+		flag.StringVar(&cfg.AccrualSystemAddr, "r", "http://localhost:8080", "Accural system address")
 	}
 
 	flag.Parse()

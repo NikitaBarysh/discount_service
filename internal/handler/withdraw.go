@@ -35,7 +35,7 @@ func (h *Handler) useWithdraw(c *gin.Context) {
 
 	err := c.BindJSON(&withdraw)
 	if err != nil {
-		entity.NewErrorResponse(c, http.StatusInternalServerError, "err to read body")
+		entity.NewErrorResponse(c, http.StatusBadRequest, "err to read ")
 		return
 	}
 

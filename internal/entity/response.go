@@ -11,7 +11,7 @@ type ResponseOrder struct {
 
 type ResponseWithdraw struct {
 	OrderNumber string    `json:"order"`
-	Sum         string    `json:"sum"`
+	Sum         int       `json:"sum"`
 	UploadedAt  time.Time `json:"uploaded_at"`
 }
 
