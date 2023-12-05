@@ -43,6 +43,7 @@ func (s *WorkerPool) Run(ctx context.Context) {
 				select {
 				case update := <-s.inputCH:
 					err := s.storage.UpdateStatus(update)
+					fmt.Println("run update err: ", err)
 					if err != nil {
 						fmt.Println("err to do request into Accrual: ", err)
 					}
