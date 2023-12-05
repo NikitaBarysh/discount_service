@@ -89,7 +89,7 @@ func (r *OrderRepository) UpdateStatus(response entity.UpdateStatus) error {
 	res.Scan(&user)
 	fmt.Println("updated user: ", user)
 
-	_, err = tx.Exec(updateOrderStatus, response.Status, response.Order)
+	_, err = tx.Exec(updateOrderStatus, response.Status, response.Accrual, response.Order)
 	fmt.Println("err update status order: ", err)
 	if err != nil {
 		tx.Rollback()

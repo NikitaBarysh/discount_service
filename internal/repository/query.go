@@ -11,7 +11,7 @@ const (
 	getAllWithdraw    = `SELECT number, sum, uploaded_at FROM withdraws WHERE user_id=$1`
 	getNewOrder       = `SELECT number, user_id FROM orders WHERE status='NEW'`
 	updateUserBalance = `UPDATE  users SET current=current + $1 WHERE id=$2`
-	updateOrderStatus = `UPDATE orders SET status=$1 WHERE number=$2`
+	updateOrderStatus = `UPDATE orders SET status=$1 AND accrual=$2 WHERE number=$3`
 	getUserIDByLogin  = `SELECT id FROM users WHERE login=$1`
 	getUserOrder      = `SELECT id FROM orders WHERE user_id=$1 AND number=$2`
 )
