@@ -8,10 +8,6 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-const (
-	usersTable = "users"
-)
-
 func NewPostgresDB(ctx context.Context, dsn string) (*sqlx.DB, error) {
 	db, err := sqlx.Open("pgx", dsn)
 	if err != nil {
