@@ -94,6 +94,8 @@ func (s *WorkerPool) GetRequest() error {
 
 	for _, v := range numbers {
 		res, err := RequestToAccrual(v.Order, s.Accrual)
+		fmt.Println("get req res:", res)
+		fmt.Println("get req err:", err)
 		if err != nil {
 			if errors.Is(err, entity.ErrTooManyRequest) {
 				return err
