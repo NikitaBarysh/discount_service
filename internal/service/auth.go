@@ -56,7 +56,7 @@ func (s *AuthService) GenerateToken(userID int) (string, error) {
 		},
 		UserID: userID,
 	})
-	fmt.Println("generate token user id: ", userID)
+
 	return token.SignedString([]byte(signingKey))
 }
 
@@ -77,20 +77,17 @@ func (s *AuthService) ParseToken(authToken string) (int, error) {
 
 		return []byte(signingKey), nil
 	})
-	fmt.Println("token: ", token)
-	fmt.Println("token err: ", err)
 
 	if err != nil {
 		return 0, fmt.Errorf("err to parse token: %w", err)
 	}
 
 	claims, ok := token.Claims.(*claims)
-	fmt.Println("claims: ", claims)
-	fmt.Println("claims ok: ", ok)
+
 	if !ok {
 		return 0, errors.New("wrong type of token claims")
 	}
-	fmt.Println("claims user id", claims.UserID)
+
 	return claims.UserID, nil
 }
 
@@ -109,7 +106,7 @@ func (s *AuthService) ValidateLogin(user entity.User) error {
 
 func (s *AuthService) CheckData(user entity.User) (int, error) {
 	res, err := s.rep.GetUser(user.Login, generatePasswordHash(user.Password))
-	fmt.Println("err to get user: ", err)
+
 	if err != nil {
 		return 0, fmt.Errorf("get user: %w", err)
 	}

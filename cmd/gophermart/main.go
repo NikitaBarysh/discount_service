@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/NikitaBarysh/discount_service.git/configs"
 	"github.com/NikitaBarysh/discount_service.git/internal/app"
 	"github.com/NikitaBarysh/discount_service.git/internal/handler"
@@ -16,7 +15,7 @@ import (
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 	cfg := configs.ParseServerConfig()
-	fmt.Println(cfg)
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -27,7 +26,7 @@ func main() {
 
 	db, err := repository.NewPostgresDB(ctx, cfg.DatabaseDSN)
 	if err != nil {
-		fmt.Println("main: postgres")
+
 		logrus.Error("main: NewPostgresDB: %w", err)
 	}
 	storage := repository.NewRepository(db)
@@ -42,7 +41,7 @@ func main() {
 
 	srv := new(app.Server)
 	if err := srv.Run(cfg.RunAddr, handlers.InitRouters()); err != nil {
-		fmt.Println("main: run", cfg.RunAddr)
+
 		logrus.Error("err while running server: %w", err)
 	}
 }

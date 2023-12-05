@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -31,18 +30,8 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
-	//fmt.Println("cast login to string", userLogin.(string))
-	//userID, err := h.services.Authorization.GetUserIDByLogin(userLogin.(string))
-	//fmt.Println("handler user id: ", userID)
-	//fmt.Println("err ", err)
-	//if err != nil {
-	//	entity.NewErrorResponse(c, http.StatusNotFound, "can't get userID")
-	//	return
-	//}
-
 	id, errGet := c.Get(userCtx)
-	fmt.Println("id :", id)
-	fmt.Println("err get: ", errGet)
+
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return

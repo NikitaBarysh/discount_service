@@ -24,8 +24,8 @@ type OrderResponse struct {
 }
 
 func RequestToAccrual(number, accrual string) (OrderResponse, error) {
-	fmt.Println("arg: ", accrual)
 	url := fmt.Sprintf("%s/api/orders/%s", accrual, number)
+	fmt.Println("accrual url: ", url)
 	response, err := http.Get(url)
 	if err != nil {
 		return OrderResponse{}, fmt.Errorf("err to get reposnse from Accrual: %w", err)

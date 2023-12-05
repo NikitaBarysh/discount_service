@@ -19,7 +19,7 @@ func NewWithdrawRepository(newDB *sqlx.DB) *WithdrawRepository {
 func (r *WithdrawRepository) GetBalance(userID int) (entity.Balance, error) {
 	var balance entity.Balance
 	err := r.db.Get(&balance, getBalance, userID)
-
+	fmt.Println("get balance err: ", err)
 	if err != nil {
 		return entity.Balance{}, fmt.Errorf("err to get balance: %w", err)
 	}

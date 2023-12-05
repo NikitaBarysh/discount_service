@@ -33,7 +33,7 @@ func (r *AuthPostgres) CreateUser(user entity.User) (int, error) {
 	row := tx.QueryRow(getUserIDByLogin, user.Login)
 
 	err = row.Scan(&id)
-	fmt.Println("id: ", id)
+
 	if err != nil {
 		err := tx.Rollback()
 		if err != nil {
@@ -47,11 +47,9 @@ func (r *AuthPostgres) CreateUser(user entity.User) (int, error) {
 
 func (r *AuthPostgres) GetUserIDByLogin(login string) (int, error) {
 	var userID int
-	//SELECT id FROM users WHERE login=$1
-	fmt.Println("rep login: ", login)
+
 	err := r.db.Get(&userID, getUserIDByLogin, login)
-	fmt.Println("rep err: ", err)
-	fmt.Println("userID id: ", userID)
+
 	if err != nil {
 		return 0, fmt.Errorf("err to get id: %w", err)
 	}
@@ -66,21 +64,17 @@ func (r *AuthPostgres) GetUser(login, password string) (int, error) {
 	}
 
 	row := r.db.QueryRow(getUser, login, password)
-	fmt.Println("db get user: ", row.Err())
+
 	if row.Err() != nil {
 		tx.Rollback()
 		return 0, fmt.Errorf("err to query: %w", row.Err())
 	}
 	err = row.Scan(&id)
-	fmt.Println("db scan: ", err)
+
 	if err != nil {
 		tx.Rollback()
 		return 0, fmt.Errorf("err to scan: %w", err)
 	}
-	fmt.Println("db user id: ", id)
-	//if err != nil {
-	//	return entity.User{}, fmt.Errorf("err to get user form db: %w", err)
-	//}
 
 	return id, tx.Commit()
 }
