@@ -80,10 +80,10 @@ func (mr *MockAuthorizationMockRecorder) GenerateToken(userID interface{}) *gomo
 }
 
 // GetUser mocks base method.
-func (m *MockAuthorization) GetUser(userData entity.User) (entity.User, error) {
+func (m *MockAuthorization) GetUser(userData entity.User) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUser", userData)
-	ret0, _ := ret[0].(entity.User)
+	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
