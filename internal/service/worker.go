@@ -12,19 +12,16 @@ import (
 )
 
 type WorkerPool struct {
-	ctx     context.Context
 	workers int
-	inputCH chan entity.UpdateStatus
+	inputCH chan entity.Status
 	storage repository.Order
-	request OrderRequest
 	Accrual string
 }
 
-func NewWorkerPool(ctx context.Context, workers int, rep repository.Order, accrual string) *WorkerPool {
+func NewWorkerPool(workers int, rep repository.Order, accrual string) *WorkerPool {
 	return &WorkerPool{
-		ctx:     ctx,
 		workers: workers,
-		inputCH: make(chan entity.UpdateStatus, 6),
+		inputCH: make(chan entity.Status, 6),
 		storage: rep,
 		Accrual: accrual,
 	}
@@ -83,7 +80,7 @@ func (s *WorkerPool) scheduler(ctx context.Context) *time.Ticker {
 	return ticker
 }
 
-func (s *WorkerPool) set(res entity.UpdateStatus) {
+func (s *WorkerPool) set(res entity.Status) {
 	s.inputCH <- res
 }
 
@@ -103,11 +100,11 @@ func (s *WorkerPool) GetRequest() error {
 			fmt.Println(fmt.Errorf("err to do request: %w", err))
 			continue
 		}
-		response := entity.UpdateStatus{
+		response := entity.Status{
 			UserID:  v.UserID,
 			Order:   res.Order,
 			Status:  res.Status,
-			Accrual: res.Accrual,
+			Accrual: int(res.Accrual * 100),
 		}
 
 		s.set(response)

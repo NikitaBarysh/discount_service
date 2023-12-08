@@ -9,10 +9,6 @@ import (
 	"github.com/NikitaBarysh/discount_service.git/internal/entity"
 )
 
-type OrderRequest struct {
-	AccrualHost string
-}
-
 type OrderResponse struct {
 	Order   string  `json:"order"`
 	Status  string  `json:"status"`
@@ -20,7 +16,7 @@ type OrderResponse struct {
 }
 
 func RequestToAccrual(number, accrual string) (OrderResponse, error) {
-	url := fmt.Sprintf("%s/api/orders/%s", accrual, number)
+	url := fmt.Sprintf("http://localhost:8080/api/orders/%s", number)
 
 	response, err := http.Get(url)
 	if err != nil {
@@ -41,12 +37,13 @@ func RequestToAccrual(number, accrual string) (OrderResponse, error) {
 	if response.StatusCode == http.StatusTooManyRequests {
 		return OrderResponse{}, entity.ErrTooManyRequest
 	}
+
 	body, err := io.ReadAll(response.Body)
+	defer response.Body.Close()
 
 	if err != nil {
 		return OrderResponse{}, fmt.Errorf("err to read body: %w", err)
 	}
-	defer response.Body.Close()
 
 	var res OrderResponse
 

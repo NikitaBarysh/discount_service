@@ -57,8 +57,8 @@ func (r *OrderRepository) CheckUserOrder(userID int, number string) int {
 	return orderID
 }
 
-func (r *OrderRepository) GetNewOrder() ([]entity.UpdateStatus, error) {
-	number := make([]entity.UpdateStatus, 0)
+func (r *OrderRepository) GetNewOrder() ([]entity.Status, error) {
+	number := make([]entity.Status, 0)
 	err := r.db.Select(&number, getNewOrder)
 
 	if err != nil {
@@ -68,7 +68,7 @@ func (r *OrderRepository) GetNewOrder() ([]entity.UpdateStatus, error) {
 	return number, nil
 }
 
-func (r *OrderRepository) UpdateStatus(response entity.UpdateStatus) error {
+func (r *OrderRepository) UpdateStatus(response entity.Status) error {
 	tx, err := r.db.Begin()
 
 	if err != nil {

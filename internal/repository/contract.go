@@ -15,8 +15,8 @@ type Order interface {
 	CreateOrder(order entity.Order) error
 	CheckNumber(number string) int
 	GetOrders(userID int) ([]entity.Order, error)
-	GetNewOrder() ([]entity.UpdateStatus, error)
-	UpdateStatus(response entity.UpdateStatus) error
+	GetNewOrder() ([]entity.Status, error)
+	UpdateStatus(response entity.Status) error
 	CheckUserOrder(userID int, number string) int
 }
 

@@ -39,7 +39,7 @@ func main() {
 	newService := service.NewService(storage)
 	handlers := handler.NewHandler(newService)
 
-	work := service.NewWorkerPool(ctx, 6, storage.Order, cfg.Accrual)
+	work := service.NewWorkerPool(6, storage.Order, cfg.Accrual)
 
 	go func() {
 		work.Run(ctx)
@@ -47,8 +47,8 @@ func main() {
 
 	srv := new(app.Server)
 	go func() {
-		if err := srv.Run(cfg.Endpoint, handlers.InitRouters()); err != nil {
-			logrus.Error("err while running server: %w", err)
+		if err := srv.Run(":8000", handlers.InitRouters()); err != nil {
+			logrus.Error("err while running server: ", err)
 		}
 	}()
 	logrus.Info("server started with port: ", cfg.Endpoint)
