@@ -61,7 +61,7 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
-	responseOrder := entity.ResponseOrder{
+	responseOrder := entity.Order{
 		Number:     order.Number,
 		Status:     order.Status,
 		Accrual:    order.Accrual,
@@ -86,9 +86,9 @@ func (h *Handler) getOrders(c *gin.Context) {
 		return
 	}
 
-	orders := make([]entity.ResponseOrder, 0)
+	orders := make([]entity.Order, 0)
 	for _, v := range res {
-		order := entity.ResponseOrder{
+		order := entity.Order{
 			Number:     v.Number,
 			Status:     v.Status,
 			Accrual:    v.Accrual,

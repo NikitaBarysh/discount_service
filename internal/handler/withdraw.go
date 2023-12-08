@@ -22,9 +22,9 @@ func (h *Handler) getBalance(c *gin.Context) {
 		return
 	}
 
-	responseBalance := entity.ResponseBalance{
-		Current:  balance.Money,
-		Withdraw: balance.Bonus,
+	responseBalance := entity.Balance{
+		Money: balance.Money,
+		Bonus: balance.Bonus,
 	}
 
 	c.JSON(http.StatusOK, responseBalance)
@@ -84,13 +84,13 @@ func (h *Handler) getWithdraw(c *gin.Context) {
 		return
 	}
 
-	responseWithdraw := make([]entity.ResponseWithdraw, 0)
+	responseWithdraw := make([]entity.Withdraw, 0)
 
 	for _, v := range withdraw {
-		res := entity.ResponseWithdraw{
-			OrderNumber: v.Number,
-			Sum:         v.Sum,
-			UploadedAt:  v.UploadedAt,
+		res := entity.Withdraw{
+			Number:     v.Number,
+			Sum:        v.Sum,
+			UploadedAt: v.UploadedAt,
 		}
 		responseWithdraw = append(responseWithdraw, res)
 	}
