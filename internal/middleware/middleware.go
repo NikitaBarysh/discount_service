@@ -1,19 +1,28 @@
-package handler
+package middleware
 
 import (
 	"net/http"
 	"strings"
 
 	"github.com/NikitaBarysh/discount_service.git/internal/entity"
+	"github.com/NikitaBarysh/discount_service.git/internal/service"
 	"github.com/gin-gonic/gin"
 )
 
+type Middleware struct {
+	services *service.Service
+}
+
+func NewMiddleware(service *service.Service) *Middleware {
+	return &Middleware{services: service}
+}
+
 const (
 	authorizationHeader = "Authorization"
-	userCtx             = "user_id"
+	UserCtx             = "user_id"
 )
 
-func (h *Handler) userIdentity(c *gin.Context) {
+func (m *Middleware) UserIdentity(c *gin.Context) {
 	header := c.GetHeader(authorizationHeader)
 	if header == "" {
 		entity.NewErrorResponse(c, http.StatusUnauthorized, "empty auth header")
@@ -36,12 +45,12 @@ func (h *Handler) userIdentity(c *gin.Context) {
 		return
 	}
 
-	userId, err := h.services.Authorization.ParseToken(headerParts[1])
+	userID, err := m.services.Authorization.ParseToken(headerParts[1])
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusUnauthorized, "can't parse token")
 		c.Abort()
 		return
 	}
 
-	c.Set(userCtx, userId)
+	c.Set(UserCtx, userID)
 }

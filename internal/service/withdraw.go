@@ -17,7 +17,8 @@ func NewWithdrawService(newRep *repository.Repository) *WithdrawService {
 }
 
 func (s *WithdrawService) GetBalance(userID int) (entity.Balance, error) {
-	balance, err := s.rep.GetBalance(userID)
+	balance, err := s.rep.GetUserBalance(userID)
+
 	if err != nil {
 		return entity.Balance{}, fmt.Errorf("err to GetBalnca from DB: %w", err)
 	}
@@ -28,8 +29,8 @@ func (s *WithdrawService) GetBalance(userID int) (entity.Balance, error) {
 func (s *WithdrawService) SetWithdraw(withdraw entity.Withdraw, userID int) error {
 	err := s.rep.SetWithdraw(withdraw, userID)
 	if err != nil {
-		if errors.Is(err, entity.NotEnoughMoney) {
-			return entity.NotEnoughMoney
+		if errors.Is(err, entity.ErrNotEnoughMoney) {
+			return entity.ErrNotEnoughMoney
 		}
 		return fmt.Errorf("err to Set in DB: %w", err)
 	}
@@ -37,8 +38,8 @@ func (s *WithdrawService) SetWithdraw(withdraw entity.Withdraw, userID int) erro
 	return nil
 }
 
-func (s *WithdrawService) GetWithdraw(userId int) ([]entity.Withdraw, error) {
-	res, err := s.rep.GetWithdraw(userId)
+func (s *WithdrawService) GetWithdraw(userID int) ([]entity.Withdraw, error) {
+	res, err := s.rep.GetWithdraw(userID)
 	if err != nil {
 		return nil, fmt.Errorf("err GetWithdraw from DB: %w", err)
 	}

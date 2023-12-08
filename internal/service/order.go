@@ -36,7 +36,7 @@ func (s *OrderService) GetOrders(userID int) ([]entity.Order, error) {
 func (s *OrderService) CheckNumber(number string) error {
 
 	numDB := s.rep.CheckNumber(number)
-	if !numDB {
+	if numDB != 0 {
 		return fmt.Errorf("order already exist")
 	}
 
@@ -64,4 +64,13 @@ func checksum(number int) int {
 		number = number / 10
 	}
 	return luhn % 10
+}
+
+func (s *OrderService) CheckUserOrder(userID int, number string) error {
+	res := s.rep.CheckUserOrder(userID, number)
+	if res != 0 {
+		return fmt.Errorf("order already created")
+	}
+
+	return nil
 }

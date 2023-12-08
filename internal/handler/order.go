@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/NikitaBarysh/discount_service.git/internal/entity"
+	"github.com/NikitaBarysh/discount_service.git/internal/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,15 +19,28 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
-	number, _ := strconv.Atoi(string(body))
-	if err != nil {
+	number, errConv := strconv.Atoi(string(body))
+	if errConv != nil {
 		entity.NewErrorResponse(c, http.StatusBadRequest, "can't convert to int")
 		return
 	}
 
 	res := h.services.Order.LuhnAlgorithm(number)
-	if res == false {
+	if !res {
 		entity.NewErrorResponse(c, http.StatusUnprocessableEntity, "don't pass luhn algorithm check")
+		return
+	}
+
+	id, errGet := c.Get(middleware.UserCtx)
+
+	if !errGet {
+		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
+		return
+	}
+
+	errUserNumber := h.services.Order.CheckUserOrder(id.(int), string(body))
+	if errUserNumber != nil {
+		entity.NewErrorResponse(c, http.StatusOK, "order already accepted")
 		return
 	}
 
@@ -36,14 +50,8 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
-	userId, errGet := c.Get(userCtx)
-	if !errGet {
-		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
-		return
-	}
-
 	order := entity.Order{
-		UserId: userId.(int),
+		UserID: id.(int),
 		Number: string(body),
 		Status: "NEW",
 	}
@@ -54,38 +62,37 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
-	responseOrder := entity.ResponseOrder{
+	responseOrder := ResponseOrder{
 		Number:     order.Number,
 		Status:     order.Status,
-		Accrual:    order.Accrual,
+		Accrual:    float64(order.Accrual) / 100,
 		UploadedAt: order.UploadedAt,
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
+	c.JSON(http.StatusAccepted, map[string]interface{}{
 		"order": responseOrder,
 	})
-
 }
 
 func (h *Handler) getOrders(c *gin.Context) {
-	userId, errGet := c.Get(userCtx)
+	userID, errGet := c.Get(middleware.UserCtx)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
 	}
 
-	res, err := h.services.Order.GetOrders(userId.(int))
+	res, err := h.services.Order.GetOrders(userID.(int))
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusNoContent, "you don't have orders")
 		return
 	}
 
-	orders := make([]entity.ResponseOrder, 0)
+	orders := make([]ResponseOrder, 0)
 	for _, v := range res {
-		order := entity.ResponseOrder{
+		order := ResponseOrder{
 			Number:     v.Number,
 			Status:     v.Status,
-			Accrual:    v.Accrual,
+			Accrual:    float64(v.Accrual) / 100,
 			UploadedAt: v.UploadedAt,
 		}
 		orders = append(orders, order)
