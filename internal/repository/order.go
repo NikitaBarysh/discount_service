@@ -22,7 +22,8 @@ func (r *OrderRepository) CreateOrder(order entity.Order) error {
 		return fmt.Errorf("err to begin TX: %w", err)
 	}
 
-	_, errInsert := tx.Exec(insertOrder, order.UserID, order.Number, order.Status, order.Accrual)
+	_, errInsert := tx.Exec(`INSERT INTO orders (user_id, number, status, accrual) VALUES ($1, $2, $3, $4)`,
+		order.UserID, order.Number, order.Status, order.Accrual)
 
 	if errInsert != nil {
 		tx.Rollback()
@@ -34,7 +35,9 @@ func (r *OrderRepository) CreateOrder(order entity.Order) error {
 
 func (r *OrderRepository) GetOrders(userID int) ([]entity.Order, error) {
 	orderSlice := make([]entity.Order, 0)
-	err := r.db.Select(&orderSlice, getOrders, userID)
+	err := r.db.Select(&orderSlice,
+		`SELECT number, status, accrual, uploaded_at FROM orders WHERE user_id=$1 ORDER BY uploaded_at`,
+		userID)
 
 	if err != nil {
 		return nil, fmt.Errorf("can't get data")
@@ -45,21 +48,24 @@ func (r *OrderRepository) GetOrders(userID int) ([]entity.Order, error) {
 
 func (r *OrderRepository) CheckNumber(number string) int {
 	var order entity.Order
-	r.db.Get(&order.ID, getOrder, number)
+	r.db.Get(&order.ID, `SELECT id FROM orders WHERE number=$1`, number)
 
 	return order.ID
 }
 
 func (r *OrderRepository) CheckUserOrder(userID int, number string) int {
 	var orderID int
-	r.db.Get(&orderID, getUserOrder, userID, number)
+	r.db.Get(&orderID,
+		`SELECT id FROM orders WHERE user_id=$1 AND number=$2`,
+		userID, number)
 
 	return orderID
 }
 
 func (r *OrderRepository) GetNewOrder() ([]entity.Status, error) {
 	number := make([]entity.Status, 0)
-	err := r.db.Select(&number, getNewOrder)
+	err := r.db.Select(&number,
+		`SELECT number, user_id FROM orders WHERE status='NEW'`)
 
 	if err != nil {
 		return nil, fmt.Errorf("err to get number: %w", err)
@@ -75,7 +81,8 @@ func (r *OrderRepository) UpdateStatus(response entity.Status) error {
 		return fmt.Errorf("err to begin TX: %w", err)
 	}
 
-	_, err = tx.Exec(updateUserBalance, response.Accrual, response.UserID)
+	_, err = tx.Exec(`UPDATE  users SET current=current + $1 WHERE id=$2`,
+		response.Accrual, response.UserID)
 
 	if err != nil {
 		tx.Rollback()
@@ -83,7 +90,8 @@ func (r *OrderRepository) UpdateStatus(response entity.Status) error {
 	}
 
 	accrual := response.Accrual
-	_, err = tx.Exec(updateOrderStatus, response.Status, accrual, response.Order)
+	_, err = tx.Exec(`UPDATE orders SET status=$1, accrual=$2 WHERE number=$3`,
+		response.Status, accrual, response.Order)
 
 	if err != nil {
 		tx.Rollback()

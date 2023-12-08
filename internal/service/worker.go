@@ -37,16 +37,16 @@ func (s *WorkerPool) Run(ctx context.Context) {
 
 		go func() {
 		out:
-			for {
+			for { // TODO
 				select {
+				case <-ctx.Done():
+					break out
 				case update := <-s.inputCH:
 					err := s.storage.UpdateStatus(update)
 					if err != nil {
 						fmt.Println("err to do request into Accrual: ", err)
 					}
 					continue
-				case <-ctx.Done():
-					break out
 				}
 			}
 			wg.Done()

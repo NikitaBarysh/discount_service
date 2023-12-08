@@ -22,7 +22,8 @@ func (r *AuthPostgres) CreateUser(user entity.User) (int, error) {
 		return 0, fmt.Errorf("err to beginTx: %w", err)
 	}
 
-	_, err = tx.Exec(insertUser, user.Login, user.Password)
+	_, err = tx.Exec(`INSERT INTO users (login, password) VALUES ($1, $2) RETURNING id`,
+		user.Login, user.Password)
 	if err != nil {
 		err := tx.Rollback()
 		if err != nil {
@@ -31,7 +32,13 @@ func (r *AuthPostgres) CreateUser(user entity.User) (int, error) {
 		return 0, err
 	}
 
-	row := tx.QueryRow(getUserIDByLogin, user.Login)
+	row := tx.QueryRow(`SELECT id FROM users WHERE login=$1`,
+		user.Login)
+
+	if row.Err() != nil {
+		tx.Rollback()
+		return 0, fmt.Errorf("err to get id: %w", row.Err())
+	}
 
 	err = row.Scan(&id)
 
@@ -49,7 +56,9 @@ func (r *AuthPostgres) CreateUser(user entity.User) (int, error) {
 func (r *AuthPostgres) GetUserIDByLogin(login string) (int, error) {
 	var userID int
 
-	err := r.db.Get(&userID, getUserIDByLogin, login)
+	err := r.db.Get(&userID,
+		`SELECT id FROM users WHERE login=$1`,
+		login)
 
 	if err != nil {
 		return 0, fmt.Errorf("err to get id: %w", err)
@@ -64,7 +73,8 @@ func (r *AuthPostgres) GetUser(login, password string) (int, error) {
 		return 0, fmt.Errorf("err to beginTx: %w", err)
 	}
 
-	row := r.db.QueryRow(getUser, login, password)
+	row := r.db.QueryRow(`SELECT id FROM users WHERE  login=$1 AND password=$2`,
+		login, password)
 
 	if row.Err() != nil {
 		tx.Rollback()
