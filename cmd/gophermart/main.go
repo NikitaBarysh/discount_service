@@ -47,7 +47,7 @@ func main() {
 
 	srv := new(app.Server)
 	go func() {
-		if err := srv.Run(":8000", handlers.InitRouters()); err != nil {
+		if err := srv.Run(cfg.Endpoint, handlers.InitRouters()); err != nil {
 			logrus.Error("err while running server: ", err)
 		}
 	}()

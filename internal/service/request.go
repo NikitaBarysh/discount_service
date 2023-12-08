@@ -16,7 +16,7 @@ type OrderResponse struct {
 }
 
 func RequestToAccrual(number, accrual string) (OrderResponse, error) {
-	url := fmt.Sprintf("http://localhost:8080/api/orders/%s", number)
+	url := fmt.Sprintf("%s/api/orders/%s", accrual, number)
 
 	response, err := http.Get(url)
 	if err != nil {
