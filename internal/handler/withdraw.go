@@ -31,15 +31,15 @@ func (h *Handler) getBalance(c *gin.Context) {
 }
 
 func (h *Handler) useWithdraw(c *gin.Context) {
-	var withdraw entity.Withdraw
+	var inputWithdraw InputWithdraw
 
-	err := c.BindJSON(&withdraw)
+	err := c.BindJSON(&inputWithdraw)
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusBadRequest, "err to read ")
 		return
 	}
 
-	number, err := strconv.Atoi(withdraw.Number)
+	number, err := strconv.Atoi(inputWithdraw.Number)
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "err to conv number")
 		return
@@ -55,6 +55,11 @@ func (h *Handler) useWithdraw(c *gin.Context) {
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
+	}
+
+	withdraw := entity.Withdraw{
+		Number: inputWithdraw.Number,
+		Sum:    int(inputWithdraw.Sum * 100),
 	}
 
 	err = h.services.Withdraw.SetWithdraw(withdraw, id.(int))

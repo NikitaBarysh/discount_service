@@ -19,3 +19,8 @@ type ResponseBalance struct {
 	Current  float64 `json:"current"`
 	Withdraw float64 `json:"withdrawn"`
 }
+
+type InputWithdraw struct {
+	Number string  `json:"order" binding:"required"`
+	Sum    float64 `json:"sum" binding:"required"`
+}
