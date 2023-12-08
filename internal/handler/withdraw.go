@@ -6,11 +6,12 @@ import (
 	"strconv"
 
 	"github.com/NikitaBarysh/discount_service.git/internal/entity"
+	"github.com/NikitaBarysh/discount_service.git/internal/middleware"
 	"github.com/gin-gonic/gin"
 )
 
 func (h *Handler) getBalance(c *gin.Context) {
-	id, errGet := c.Get(userCtx)
+	id, errGet := c.Get(middleware.UserCtx)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
@@ -51,7 +52,7 @@ func (h *Handler) useWithdraw(c *gin.Context) {
 		return
 	}
 
-	id, errGet := c.Get(userCtx)
+	id, errGet := c.Get(middleware.UserCtx)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
@@ -77,7 +78,7 @@ func (h *Handler) useWithdraw(c *gin.Context) {
 }
 
 func (h *Handler) getWithdraw(c *gin.Context) {
-	id, errGet := c.Get(userCtx)
+	id, errGet := c.Get(middleware.UserCtx)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get user id")
 		return

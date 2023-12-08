@@ -1,4 +1,4 @@
-package handler
+package middleware
 
 import (
 	"errors"
@@ -89,11 +89,12 @@ func TestHandler_userIdentity(t *testing.T) {
 			testCase.mockBehaviour(auth, testCase.token)
 
 			services := &service.Service{Authorization: auth}
-			handler := NewHandler(services)
+			//handler := handler2.NewHandler(services)
+			middleware := NewMiddleware(services)
 
 			r := gin.New()
-			r.GET("/protected", handler.userIdentity, func(c *gin.Context) {
-				id, _ := c.Get(userCtx)
+			r.GET("/protected", middleware.UserIdentity, func(c *gin.Context) {
+				id, _ := c.Get(UserCtx)
 				c.String(200, fmt.Sprintf("%d", id.(int)))
 			})
 

@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"github.com/NikitaBarysh/discount_service.git/internal/middleware"
 	"github.com/NikitaBarysh/discount_service.git/internal/service"
 	"github.com/gin-gonic/gin"
 )
 
 type Handler struct {
-	services *service.Service
+	services   *service.Service
+	middleware middleware.Middleware
 }
 
 func NewHandler(newService *service.Service) *Handler {
@@ -22,7 +24,7 @@ func (h *Handler) InitRouters() *gin.Engine {
 		auth.POST("/login", h.signIn)
 	}
 
-	user := router.Group("/api/user", h.userIdentity)
+	user := router.Group("/api/user", h.middleware.UserIdentity)
 	{
 		user.POST("/orders", h.setOrder)
 		user.GET("/orders", h.getOrders)

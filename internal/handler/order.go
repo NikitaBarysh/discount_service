@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/NikitaBarysh/discount_service.git/internal/entity"
+	"github.com/NikitaBarysh/discount_service.git/internal/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,7 +31,7 @@ func (h *Handler) setOrder(c *gin.Context) {
 		return
 	}
 
-	id, errGet := c.Get(userCtx)
+	id, errGet := c.Get(middleware.UserCtx)
 
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
@@ -74,7 +75,7 @@ func (h *Handler) setOrder(c *gin.Context) {
 }
 
 func (h *Handler) getOrders(c *gin.Context) {
-	userID, errGet := c.Get(userCtx)
+	userID, errGet := c.Get(middleware.UserCtx)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
