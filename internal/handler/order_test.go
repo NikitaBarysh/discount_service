@@ -175,17 +175,6 @@ func TestHandler_getOrders(t *testing.T) {
 			},
 			mockBehaviour: func(s *service.MockOrder, order entity.Order) {
 				s.EXPECT().GetOrders(1).Return([]entity.Order{order}, nil)
-				res := []entity.Order{order}
-				orders := make([]ResponseOrder, 0)
-				for _, v := range res {
-					order := ResponseOrder{
-						Number:     v.Number,
-						Status:     v.Status,
-						Accrual:    float64(v.Accrual) / 100,
-						UploadedAt: v.UploadedAt,
-					}
-					orders = append(orders, order)
-				}
 			},
 			expectedStatusCode:  200,
 			expectedRequestBody: `[{"number":"378282246310005","status":"NEW","uploaded_at":"0001-01-01T00:00:00Z"}]`,
