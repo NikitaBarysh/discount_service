@@ -105,7 +105,7 @@ func TestHandler_signUp(t *testing.T) {
 			services := &service.Service{Authorization: auth}
 			handler := NewHandler(services)
 
-			r := gin.New()
+			r := gin.Default()
 			r.POST("/register", handler.signUp)
 
 			rw := httptest.NewRecorder()
