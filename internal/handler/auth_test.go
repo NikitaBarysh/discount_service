@@ -36,8 +36,8 @@ func TestHandler_signUp(t *testing.T) {
 			token: "token",
 			mockBehaviour: func(s *service.MockAuthorization, user entity.User, token string) {
 				s.EXPECT().ValidateLogin(user).Return(nil)
-				s.EXPECT().CreateUser(user).Return(nil)
-				s.EXPECT().GenerateToken(user).Return(tokenAnswer, nil)
+				s.EXPECT().CreateUser(user).Return(1, nil)
+				s.EXPECT().GenerateToken(1).Return(tokenAnswer, nil)
 			},
 			expectedStatusCode:  200,
 			expectedRequestBody: `{"status":"user created","token":"test"}`,
@@ -58,7 +58,7 @@ func TestHandler_signUp(t *testing.T) {
 			},
 			mockBehaviour: func(s *service.MockAuthorization, user entity.User, token string) {
 				s.EXPECT().ValidateLogin(user).Return(nil)
-				s.EXPECT().CreateUser(user).Return(errors.New("service error"))
+				s.EXPECT().CreateUser(user).Return(0, errors.New("service error"))
 			},
 			expectedStatusCode:  500,
 			expectedRequestBody: `{"message":"server error, can't do registration"}`,
@@ -71,7 +71,7 @@ func TestHandler_signUp(t *testing.T) {
 				Password: "qwerty",
 			},
 			mockBehaviour: func(s *service.MockAuthorization, user entity.User, token string) {
-				s.EXPECT().ValidateLogin(user).Return(entity.NotUniqueLogin)
+				s.EXPECT().ValidateLogin(user).Return(entity.ErrNotUniqueLogin)
 			},
 			expectedStatusCode:  409,
 			expectedRequestBody: `{"message":"create new login, this is busy"}`,
@@ -86,8 +86,8 @@ func TestHandler_signUp(t *testing.T) {
 			token: "token",
 			mockBehaviour: func(s *service.MockAuthorization, user entity.User, token string) {
 				s.EXPECT().ValidateLogin(user).Return(nil)
-				s.EXPECT().CreateUser(user).Return(nil)
-				s.EXPECT().GenerateToken(user).Return("", entity.ErrToGenerateToken)
+				s.EXPECT().CreateUser(user).Return(1, nil)
+				s.EXPECT().GenerateToken(1).Return("", entity.ErrToGenerateToken)
 			},
 			expectedStatusCode:  500,
 			expectedRequestBody: `{"message":"can't generate token"}`,
@@ -105,7 +105,7 @@ func TestHandler_signUp(t *testing.T) {
 			services := &service.Service{Authorization: auth}
 			handler := NewHandler(services)
 
-			r := gin.New()
+			r := gin.Default()
 			r.POST("/register", handler.signUp)
 
 			rw := httptest.NewRecorder()
@@ -142,8 +142,8 @@ func TestHandler_signIn(t *testing.T) {
 			},
 			token: "token",
 			mockBehaviour: func(s *service.MockAuthorization, user entity.User, token string) {
-				s.EXPECT().CheckData(user).Return(nil)
-				s.EXPECT().GenerateToken(user).Return(tokenAnswer, nil)
+				s.EXPECT().CheckData(user).Return(1, nil)
+				s.EXPECT().GenerateToken(1).Return(tokenAnswer, nil)
 			},
 			expectedStatusCode:   200,
 			expectedResponseBody: `{"status":"logined","token":"tokenAnswer"}`,
@@ -163,7 +163,7 @@ func TestHandler_signIn(t *testing.T) {
 				Password: "qwerty",
 			},
 			mockBehaviour: func(s *service.MockAuthorization, user entity.User, token string) {
-				s.EXPECT().CheckData(user).Return(entity.InvalidLoginPassword)
+				s.EXPECT().CheckData(user).Return(0, entity.ErrInvalidLoginPassword)
 			},
 			expectedStatusCode:   401,
 			expectedResponseBody: `{"message":"invalid login or password"}`,
@@ -177,8 +177,8 @@ func TestHandler_signIn(t *testing.T) {
 			},
 			token: "token",
 			mockBehaviour: func(s *service.MockAuthorization, user entity.User, token string) {
-				s.EXPECT().CheckData(user).Return(nil)
-				s.EXPECT().GenerateToken(user).Return("", entity.ErrToGenerateToken)
+				s.EXPECT().CheckData(user).Return(1, nil)
+				s.EXPECT().GenerateToken(1).Return("", entity.ErrToGenerateToken)
 			},
 			expectedStatusCode:   500,
 			expectedResponseBody: `{"message":"can't generate token"}`,

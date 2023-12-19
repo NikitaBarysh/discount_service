@@ -1,4 +1,4 @@
-package entity
+package handler
 
 import "time"
 
@@ -11,11 +11,16 @@ type ResponseOrder struct {
 
 type ResponseWithdraw struct {
 	OrderNumber string    `json:"order"`
-	Sum         string    `json:"sum"`
+	Sum         float64   `json:"sum"`
 	UploadedAt  time.Time `json:"uploaded_at"`
 }
 
 type ResponseBalance struct {
 	Current  float64 `json:"current"`
-	Withdraw int     `json:"withdraw"`
+	Withdraw float64 `json:"withdrawn"`
+}
+
+type InputWithdraw struct {
+	Number string  `json:"order" binding:"required"`
+	Sum    float64 `json:"sum" binding:"required"`
 }

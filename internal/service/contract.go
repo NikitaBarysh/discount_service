@@ -8,12 +8,13 @@ import (
 //go:generate mockgen -source ${GOFILE} -destination mock.go -package ${GOPACKAGE}
 
 type Authorization interface {
-	CreateUser(user entity.User) error
-	GenerateToken(user entity.User) (string, error)
+	CreateUser(user entity.User) (int, error)
+	GenerateToken(userID int) (string, error)
 	ParseToken(token string) (int, error)
 	ValidateLogin(user entity.User) error
-	CheckData(user entity.User) error
-	GetUser(userData entity.User) (entity.User, error)
+	CheckData(user entity.User) (int, error)
+	GetUser(userData entity.User) (int, error)
+	GetUserIDByLogin(login string) (int, error)
 }
 
 type Order interface {
@@ -21,12 +22,13 @@ type Order interface {
 	CreateOrder(user entity.Order) error
 	CheckNumber(number string) error
 	GetOrders(userID int) ([]entity.Order, error)
+	CheckUserOrder(userID int, number string) error
 }
 
 type Withdraw interface {
 	GetBalance(userID int) (entity.Balance, error)
 	SetWithdraw(withdraw entity.Withdraw, userID int) error
-	GetWithdraw(userId int) ([]entity.Withdraw, error)
+	GetWithdraw(userID int) ([]entity.Withdraw, error)
 }
 
 type Service struct {

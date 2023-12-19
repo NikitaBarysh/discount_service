@@ -2,15 +2,17 @@ package entity
 
 import (
 	"errors"
+
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
 var (
-	NotUniqueLogin       = errors.New(`login is busy`)
-	ErrToGenerateToken   = errors.New("error to generate token")
-	InvalidLoginPassword = errors.New("invalid login or password")
-	NotEnoughMoney       = errors.New("not enough money")
+	ErrNotUniqueLogin       = errors.New(`login is busy`)
+	ErrToGenerateToken      = errors.New("error to generate token")
+	ErrInvalidLoginPassword = errors.New("invalid login or password")
+	ErrNotEnoughMoney       = errors.New("not enough money")
+	ErrTooManyRequest       = errors.New("too many request")
 )
 
 type errResponse struct {

@@ -16,12 +16,18 @@ func NewWithdrawRepository(newDB *sqlx.DB) *WithdrawRepository {
 	return &WithdrawRepository{db: newDB}
 }
 
-func (r *WithdrawRepository) GetBalance(userID int) (entity.Balance, error) {
+func (r *WithdrawRepository) GetUserBalance(userID int) (entity.Balance, error) {
 	var balance entity.Balance
-	err := r.db.Get(&balance, getBalance, userID)
 
+	row := r.db.QueryRow(`SELECT current, withdraw FROM users WHERE id=$1`,
+		userID)
+	if row.Err() != nil {
+		return entity.Balance{}, fmt.Errorf("err to get current and withdraw: %w", row.Err())
+	}
+
+	err := row.Scan(&balance.Money, &balance.Bonus)
 	if err != nil {
-		return entity.Balance{}, fmt.Errorf("err to get balance: %w", err)
+		return balance, err
 	}
 
 	return balance, nil
@@ -36,28 +42,35 @@ func (r *WithdrawRepository) SetWithdraw(withdraw entity.Withdraw, userID int) e
 
 	var enough bool
 
-	getWithdraw := `SELECT (users.current >= $1) FROM users WHERE id=$2 FOR UPDATE `
-	row := tx.QueryRow(getWithdraw, withdraw.Sum, userID)
+	row := tx.QueryRow(`SELECT (users.current >= $1) FROM users WHERE id=$2 FOR UPDATE `,
+		withdraw.Sum, userID)
+
 	if row.Err() != nil {
+		tx.Rollback()
 		return fmt.Errorf("err to do query: %w", row.Err())
 	}
 
 	err = row.Scan(&enough)
+
 	if err != nil {
 		return fmt.Errorf("err to do Scan: %w", err)
 	}
 
 	if !enough {
-		return entity.NotEnoughMoney
+
+		return entity.ErrNotEnoughMoney
 	}
 
-	updateBalance := `UPDATE users SET current = users.current - $1, withdraw = withdraw + $1 WHERE id = $2`
-	_, err = tx.Exec(updateBalance, withdraw.Sum, userID)
+	_, err = tx.Exec(`UPDATE users SET current = users.current - $1, withdraw = withdraw + $1 WHERE id = $2`,
+		withdraw.Sum, userID)
+
 	if err != nil {
 		return fmt.Errorf("err to update balance: %w", err)
 	}
 
-	_, err = tx.Exec(insertWithdraw, withdraw.Number, userID, withdraw.Sum, "PROCESSED", time.Now())
+	_, err = tx.Exec(`INSERT INTO withdraws (number, user_id, sum, status, uploaded_at) VALUES ($1, $2, $3, $4, $5)`,
+		withdraw.Number, userID, withdraw.Sum, "PROCESSED", time.Now())
+
 	if err != nil {
 		return fmt.Errorf("err to insert Withdraw: %w", err)
 	}
@@ -65,10 +78,12 @@ func (r *WithdrawRepository) SetWithdraw(withdraw entity.Withdraw, userID int) e
 	return tx.Commit()
 }
 
-func (r *WithdrawRepository) GetWithdraw(userId int) ([]entity.Withdraw, error) {
+func (r *WithdrawRepository) GetWithdraw(userID int) ([]entity.Withdraw, error) {
 	allWithdraw := make([]entity.Withdraw, 0)
 
-	err := r.db.Select(&allWithdraw, getAllWithdraw, userId)
+	err := r.db.Select(&allWithdraw,
+		`SELECT number, sum, uploaded_at FROM withdraws WHERE user_id=$1`,
+		userID)
 
 	if err != nil {
 		return nil, fmt.Errorf("err to get Withdraw: %w", err)

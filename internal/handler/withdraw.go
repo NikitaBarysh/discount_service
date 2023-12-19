@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -11,37 +10,36 @@ import (
 )
 
 func (h *Handler) getBalance(c *gin.Context) {
-	userId, errGet := c.Get(userCtx)
+	id, errGet := c.Get(userCtx)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
 	}
 
-	balance, err := h.services.Withdraw.GetBalance(userId.(int))
+	balance, err := h.services.Withdraw.GetBalance(id.(int))
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "err to get balance")
 		return
 	}
 
-	responseBalance := entity.ResponseBalance{
-		Current:  balance.Money,
-		Withdraw: balance.Bonus,
+	responseBalance := ResponseBalance{
+		Current:  float64(balance.Money) / 100,
+		Withdraw: float64(balance.Bonus) / 100,
 	}
 
 	c.JSON(http.StatusOK, responseBalance)
 }
 
 func (h *Handler) useWithdraw(c *gin.Context) {
-	var withdraw entity.Withdraw
+	var inputWithdraw InputWithdraw
 
-	err := c.BindJSON(&withdraw)
-	fmt.Println(err)
+	err := c.BindJSON(&inputWithdraw)
 	if err != nil {
-		entity.NewErrorResponse(c, http.StatusInternalServerError, "err to read body")
+		entity.NewErrorResponse(c, http.StatusBadRequest, "err to read ")
 		return
 	}
 
-	number, err := strconv.Atoi(withdraw.Number)
+	number, err := strconv.Atoi(inputWithdraw.Number)
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "err to conv number")
 		return
@@ -53,15 +51,20 @@ func (h *Handler) useWithdraw(c *gin.Context) {
 		return
 	}
 
-	userId, errGet := c.Get(userCtx)
+	id, errGet := c.Get(userCtx)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get userID")
 		return
 	}
 
-	err = h.services.Withdraw.SetWithdraw(withdraw, userId.(int))
+	withdraw := entity.Withdraw{
+		Number: inputWithdraw.Number,
+		Sum:    int(inputWithdraw.Sum * 100),
+	}
+
+	err = h.services.Withdraw.SetWithdraw(withdraw, id.(int))
 	if err != nil {
-		if errors.Is(err, entity.NotEnoughMoney) {
+		if errors.Is(err, entity.ErrNotEnoughMoney) {
 			entity.NewErrorResponse(c, http.StatusPaymentRequired, "not enough money")
 			return
 		}
@@ -74,24 +77,24 @@ func (h *Handler) useWithdraw(c *gin.Context) {
 }
 
 func (h *Handler) getWithdraw(c *gin.Context) {
-	userId, errGet := c.Get(userCtx)
+	id, errGet := c.Get(userCtx)
 	if !errGet {
 		entity.NewErrorResponse(c, http.StatusInternalServerError, "can't get user id")
 		return
 	}
 
-	withdraw, err := h.services.Withdraw.GetWithdraw(userId.(int))
+	withdraw, err := h.services.Withdraw.GetWithdraw(id.(int))
 	if err != nil {
 		entity.NewErrorResponse(c, http.StatusNoContent, "history is empty")
 		return
 	}
 
-	responseWithdraw := make([]entity.ResponseWithdraw, 0)
+	responseWithdraw := make([]ResponseWithdraw, 0)
 
 	for _, v := range withdraw {
-		res := entity.ResponseWithdraw{
+		res := ResponseWithdraw{
 			OrderNumber: v.Number,
-			Sum:         v.Sum,
+			Sum:         float64(v.Sum) / 100,
 			UploadedAt:  v.UploadedAt,
 		}
 		responseWithdraw = append(responseWithdraw, res)
